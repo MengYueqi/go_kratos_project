@@ -1,0 +1,23 @@
+CREATE TABLE review_appeal_info (
+    `id` bigint(32) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `create_by` varchar(48) NOT NULL DEFAULT '' COMMENT '创建⽅标识',
+    `update_by` varchar(48) NOT NULL DEFAULT '' COMMENT '更新⽅标识',
+    `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间' `update_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `delete_at` timestamp COMMENT '逻辑删除标记',
+    `version` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '乐观锁标记',
+    `appeal_id` bigint(32) NOT NULL DEFAULT '0' COMMENT '回复id',
+    `review_id` bigint(32) NOT NULL DEFAULT '0' COMMENT '评价id',
+    `store_id` bigint(32) NOT NULL DEFAULT '0' COMMENT '店铺id',
+    `status` tinyint(4) NOT NULL DEFAULT '10' COMMENT '状态:10待审核；20申诉通过；30申诉驳回',
+    `reason` varchar(255) NOT NULL COMMENT '申诉原因类别',
+    `content` varchar(255) NOT NULL COMMENT '申诉内容描述',
+    `pic_info` varchar(1024) NOT NULL DEFAULT '' COMMENT '媒体信息：图⽚',
+    `video_info` varchar(1024) NOT NULL DEFAULT '' COMMENT '媒体信息：视频',
+    `op_remarks` varchar(512) NOT NULL DEFAULT '' COMMENT '运营备注' `op_user` varchar(64) NOT NULL DEFAULT '' COMMENT '运营者标识',
+    `ext_json` varchar(1024) NOT NULL DEFAULT '' COMMENT '信息扩展',
+    `ctrl_json` varchar(1024) NOT NULL DEFAULT '' COMMENT '控制扩展' PRIMARY KEY (`id`),
+    KEY `idx_delete_at` (`delete_at`) COMMENT '逻辑删除索引',
+    KEY `idx_appeal_id` (`appeal_id`) COMMENT '申诉id索引',
+    UNIQUE KEY `uk_review_id` (`review_id`) COMMENT '评价id索引',
+    KEY `idx_store_id` (`store_id`) COMMENT '店铺id索引'
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='评价商家申诉表';
