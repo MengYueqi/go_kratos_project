@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"os"
-
 	"review-service/internal/conf"
 
 	"github.com/go-kratos/kratos/v2"

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v4.25.3
-// source: api/review/v1/review.proto
+// source: review/v1/review.proto
 
 package v1
 
@@ -30,6 +30,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ReviewClient interface {
+	// 创建评价
 	CreateReview(ctx context.Context, in *CreateReviewRequest, opts ...grpc.CallOption) (*CreateReviewReply, error)
 	UpdateReview(ctx context.Context, in *UpdateReviewRequest, opts ...grpc.CallOption) (*UpdateReviewReply, error)
 	DeleteReview(ctx context.Context, in *DeleteReviewRequest, opts ...grpc.CallOption) (*DeleteReviewReply, error)
@@ -99,6 +100,7 @@ func (c *reviewClient) ListReview(ctx context.Context, in *ListReviewRequest, op
 // All implementations must embed UnimplementedReviewServer
 // for forward compatibility.
 type ReviewServer interface {
+	// 创建评价
 	CreateReview(context.Context, *CreateReviewRequest) (*CreateReviewReply, error)
 	UpdateReview(context.Context, *UpdateReviewRequest) (*UpdateReviewReply, error)
 	DeleteReview(context.Context, *DeleteReviewRequest) (*DeleteReviewReply, error)
@@ -269,5 +271,5 @@ var Review_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/review/v1/review.proto",
+	Metadata: "review/v1/review.proto",
 }

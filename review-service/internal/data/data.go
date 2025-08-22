@@ -6,27 +6,34 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"review-service/internal/conf"
+	"review-service/internal/data/query"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewGreeterRepo, NewDB, NewRedis)
+var ProviderSet = wire.NewSet(NewData, NewReviewerRepo, NewDB, NewRedis)
 
 // Data .
 type Data struct {
 	// TODO wrapped database client
-	db    *gorm.DB
+	//db    *gorm.DB
+	query *query.Query
 	redis *redis.Client
+	log   *log.Helper
 }
 
 // NewData .
 func NewData(db *gorm.DB, redis *redis.Client, c *conf.Data, logger log.Logger) (*Data, func(), error) {
+	// 为生成的代码制定对象
+	query.SetDefault(db)
+
 	// 创建返回数据库连接实例
 	dbInstance := &Data{
-		db:    db,
+		query: query.Q,
 		redis: redis,
+		log:   log.NewHelper(logger),
 	}
 
 	// 关闭连接

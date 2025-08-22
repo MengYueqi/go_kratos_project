@@ -36,11 +36,16 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	if err != nil {
 		return nil, nil, err
 	}
-	greeterRepo := data.NewGreeterRepo(dataData, logger)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
-	greeterService := service.NewGreeterService(greeterUsecase)
-	grpcServer := server.NewGRPCServer(confServer, greeterService, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService, logger)
+	reviewerRepo := data.NewReviewerRepo(dataData, logger)
+	snowflake, err := biz.NewSnowflake(confData)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	reviewerUsecase := biz.NewReviewerUsecase(reviewerRepo, snowflake, logger)
+	reviewService := service.NewReviewService(reviewerUsecase)
+	grpcServer := server.NewGRPCServer(confServer, reviewService, logger)
+	httpServer := server.NewHTTPServer(confServer, reviewService, logger)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 		cleanup()
