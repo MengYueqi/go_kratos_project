@@ -31,6 +31,7 @@ type ReviewerRepo interface {
 	GetReviewByReviewID(context.Context, int64) ([]*model.ReviewInfo, error)
 	UpdateReviewByReviewID(context.Context, *model.ReviewInfo) (int64, error)
 	GetReviewByUID(context.Context, int64) ([]*model.ReviewInfo, error)
+	AddReviewReply(context.Context, *model.ReviewReplyInfo) (int64, error)
 }
 
 // ReviewerUsecase is a Reviewer usecase.
@@ -112,4 +113,12 @@ func (uc *ReviewerUsecase) ListReviewByUid(ctx context.Context, uid int64) ([]*m
 		return nil, err
 	}
 	return rvList, nil
+}
+
+// 商家对用户的评论进行回复
+func (uc *ReviewerUsecase) AddReplyReview(ctx context.Context, reply *model.ReviewReplyInfo) (int64, error) {
+	// 生成雪花 ID
+	reply.ReplyID = uc.sf.NextID()
+	uc.log.WithContext(ctx).Infof("[biz] CreateReviewer ID: %v", reply.ReplyID)
+	return uc.repo.AddReviewReply(ctx, reply)
 }

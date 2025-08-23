@@ -75,6 +75,20 @@ func ErrorReviewidErr(format string, args ...interface{}) *errors.Error {
 	return errors.New(401, ErrorReason_REVIEWID_ERR.String(), fmt.Sprintf(format, args...))
 }
 
+// StoreID 和评论中的不一致
+func IsStoreidReviewidMismatch(err error) bool {
+	if err == nil {
+		return false
+	}
+	e := errors.FromError(err)
+	return e.Reason == ErrorReason_STOREID_REVIEWID_MISMATCH.String() && e.Code == 401
+}
+
+// StoreID 和评论中的不一致
+func ErrorStoreidReviewidMismatch(format string, args ...interface{}) *errors.Error {
+	return errors.New(401, ErrorReason_STOREID_REVIEWID_MISMATCH.String(), fmt.Sprintf(format, args...))
+}
+
 func IsOrderReviewed(err error) bool {
 	if err == nil {
 		return false

@@ -110,3 +110,28 @@ func (r *ReviewerRepo) GetReviewByUID(ctx context.Context, uid int64) ([]*model.
 	}
 	return data, nil
 }
+
+// 创建一条评论
+func (r *ReviewerRepo) AddReviewReply(ctx context.Context, reply *model.ReviewReplyInfo) (int64, error) {
+	// 查询 ShoreID 是否与评论的 Review 中的一致
+	rv, err := r.data.query.ReviewInfo.
+		WithContext(ctx).
+		Where(r.data.query.ReviewInfo.ReviewID.Eq(reply.ReviewID)).
+		Find()
+	if err != nil {
+		return 0, v1.ErrorDbFailed("DB error while searching reviewID: %v", reply.ReviewID)
+	}
+	if len(rv) == 0 {
+		return 0, v1.ErrorReviewidErr("Do not exist ReviewID: %v", reply.ReviewID)
+	}
+	// 处理 StoreID 和评论不一致的情况
+	if rv[0].StoreID != reply.StoreID {
+		return 0, v1.ErrorStoreidReviewidMismatch("Store ID mismatch with View's, StoreID: %v, View's StoreID: %v", reply.StoreID, rv[0].StoreID)
+	}
+	// 核心逻辑
+	err = r.data.query.ReviewReplyInfo.WithContext(ctx).Save(reply)
+	if err != nil {
+		return 0, v1.ErrorDbFailed("DB Save error")
+	}
+	return reply.ID, nil
+}

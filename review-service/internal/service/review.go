@@ -42,6 +42,7 @@ func (s *ReviewService) CreateReview(ctx context.Context, req *pb.CreateReviewRe
 		VideoInfo:    req.VideoInfo,
 		OrderID:      req.OrderID,
 		UserID:       req.UserID,
+		StoreID:      req.StoreID,
 	})
 	// 错误处理
 	if err != nil {
@@ -52,6 +53,7 @@ func (s *ReviewService) CreateReview(ctx context.Context, req *pb.CreateReviewRe
 		ReviewID: data.ReviewID,
 	}, nil
 }
+
 func (s *ReviewService) UpdateReview(ctx context.Context, req *pb.UpdateReviewRequest) (*pb.UpdateReviewReply, error) {
 	var anonymous int32
 	if req.Anonymous {
@@ -134,5 +136,26 @@ func (s *ReviewService) ListReviewByUid(ctx context.Context, req *pb.ListReviewB
 	}
 	return &pb.ListReviewByUidReply{
 		Reviews: retReviewList,
+	}, nil
+}
+
+func (s *ReviewService) AddReplyReview(ctx context.Context, req *pb.AddReplyReviewRequest) (*pb.AddReplyReviewReply, error) {
+	replyInfo := &model.ReviewReplyInfo{
+		CreateBy:  strconv.FormatInt(req.StoreID, 10),
+		UpdateBy:  strconv.FormatInt(req.StoreID, 10),
+		CreateAt:  time.Now(),
+		UpdateAt:  time.Now(),
+		StoreID:   req.StoreID,
+		ReviewID:  req.ReviewID,
+		Content:   req.Content,
+		VideoInfo: req.VideoInfo,
+		PicInfo:   req.PicInfo,
+	}
+	replyID, err := s.uc.AddReplyReview(ctx, replyInfo)
+	if err != nil {
+		return &pb.AddReplyReviewReply{}, err
+	}
+	return &pb.AddReplyReviewReply{
+		ReplyID: replyID,
 	}, nil
 }

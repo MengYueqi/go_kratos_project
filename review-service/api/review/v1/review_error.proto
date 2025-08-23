@@ -19,5 +19,8 @@ enum ErrorReason {
   ID_ERR = 3 [(errors.code) = 401];
   REVIEWID_ERR = 4 [(errors.code) = 401];
 
+  // StoreID 和评论中的不一致
+  STOREID_REVIEWID_MISMATCH = 5 [(errors.code) = 401];
+
   ORDER_REVIEWED = 100 [(errors.code) = 400];
 }

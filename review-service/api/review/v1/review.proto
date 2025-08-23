@@ -37,7 +37,14 @@ service Review {
 		option (google.api.http) = {
 			get: "/v1/review/users/{userID}"
 		};
-	}
+	};
+	// B 端商家回复评价
+	rpc AddReplyReview(AddReplyReviewRequest) returns (AddReplyReviewReply){
+		option(google.api.http) = {
+			post: "v1/review/reply",
+			body: "*"
+		};
+	};
 }
 
 // 创建评价的参数
@@ -61,6 +68,7 @@ message CreateReviewRequest {
 		}
 	];
 	bool anonymous = 9;
+	int64 storeID = 10 [(validate.rules).int64 = {gt: 0}];
 }
 
 // 创建评价的回复
@@ -136,4 +144,26 @@ message ListReviewByUidRequest {
 }
 message ListReviewByUidReply {
 	repeated ReviewReply reviews = 1;
+}
+
+message AddReplyReviewRequest {
+	int64 reviewID = 1 [(validate.rules).int64 = {gt: 0}];
+	string Content = 2 [(validate.rules).string = {min_len: 5}];
+	int64 storeID = 3 [(validate.rules).int64 = {gt: 0}];
+	string picInfo = 4 [
+		(validate.rules).string = {
+			pattern: "^[a-zA-Z][a-zA-Z0-9+.-]*://.+$",
+			ignore_empty: true
+		}
+	];
+	string videoInfo = 5  [
+		(validate.rules).string = {
+			pattern: "^[a-zA-Z][a-zA-Z0-9+.-]*://.+$",
+			ignore_empty: true
+		}
+	];
+}
+
+message AddReplyReviewReply {
+	int64 replyID = 1;
 }

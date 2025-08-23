@@ -36,6 +36,7 @@ type CreateReviewRequest struct {
 	PicInfo       string                 `protobuf:"bytes,7,opt,name=picInfo,proto3" json:"picInfo,omitempty"`
 	VideoInfo     string                 `protobuf:"bytes,8,opt,name=videoInfo,proto3" json:"videoInfo,omitempty"`
 	Anonymous     bool                   `protobuf:"varint,9,opt,name=anonymous,proto3" json:"anonymous,omitempty"`
+	StoreID       int64                  `protobuf:"varint,10,opt,name=storeID,proto3" json:"storeID,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -131,6 +132,13 @@ func (x *CreateReviewRequest) GetAnonymous() bool {
 		return x.Anonymous
 	}
 	return false
+}
+
+func (x *CreateReviewRequest) GetStoreID() int64 {
+	if x != nil {
+		return x.StoreID
+	}
+	return 0
 }
 
 // 创建评价的回复
@@ -798,11 +806,131 @@ func (x *ListReviewByUidReply) GetReviews() []*ReviewReply {
 	return nil
 }
 
+type AddReplyReviewRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ReviewID      int64                  `protobuf:"varint,1,opt,name=reviewID,proto3" json:"reviewID,omitempty"`
+	Content       string                 `protobuf:"bytes,2,opt,name=Content,proto3" json:"Content,omitempty"`
+	StoreID       int64                  `protobuf:"varint,3,opt,name=storeID,proto3" json:"storeID,omitempty"`
+	PicInfo       string                 `protobuf:"bytes,4,opt,name=picInfo,proto3" json:"picInfo,omitempty"`
+	VideoInfo     string                 `protobuf:"bytes,5,opt,name=videoInfo,proto3" json:"videoInfo,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddReplyReviewRequest) Reset() {
+	*x = AddReplyReviewRequest{}
+	mi := &file_api_review_v1_review_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddReplyReviewRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddReplyReviewRequest) ProtoMessage() {}
+
+func (x *AddReplyReviewRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_review_v1_review_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddReplyReviewRequest.ProtoReflect.Descriptor instead.
+func (*AddReplyReviewRequest) Descriptor() ([]byte, []int) {
+	return file_api_review_v1_review_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *AddReplyReviewRequest) GetReviewID() int64 {
+	if x != nil {
+		return x.ReviewID
+	}
+	return 0
+}
+
+func (x *AddReplyReviewRequest) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *AddReplyReviewRequest) GetStoreID() int64 {
+	if x != nil {
+		return x.StoreID
+	}
+	return 0
+}
+
+func (x *AddReplyReviewRequest) GetPicInfo() string {
+	if x != nil {
+		return x.PicInfo
+	}
+	return ""
+}
+
+func (x *AddReplyReviewRequest) GetVideoInfo() string {
+	if x != nil {
+		return x.VideoInfo
+	}
+	return ""
+}
+
+type AddReplyReviewReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ReplyID       int64                  `protobuf:"varint,1,opt,name=replyID,proto3" json:"replyID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddReplyReviewReply) Reset() {
+	*x = AddReplyReviewReply{}
+	mi := &file_api_review_v1_review_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddReplyReviewReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddReplyReviewReply) ProtoMessage() {}
+
+func (x *AddReplyReviewReply) ProtoReflect() protoreflect.Message {
+	mi := &file_api_review_v1_review_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddReplyReviewReply.ProtoReflect.Descriptor instead.
+func (*AddReplyReviewReply) Descriptor() ([]byte, []int) {
+	return file_api_review_v1_review_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *AddReplyReviewReply) GetReplyID() int64 {
+	if x != nil {
+		return x.ReplyID
+	}
+	return 0
+}
+
 var File_api_review_v1_review_proto protoreflect.FileDescriptor
 
 const file_api_review_v1_review_proto_rawDesc = "" +
 	"\n" +
-	"\x1aapi/review/v1/review.proto\x12\rapi.review.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17validate/validate.proto\"\xa5\x03\n" +
+	"\x1aapi/review/v1/review.proto\x12\rapi.review.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17validate/validate.proto\"\xc8\x03\n" +
 	"\x13CreateReviewRequest\x12\x1f\n" +
 	"\x06userID\x18\x01 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\x06userID\x12!\n" +
 	"\aorderID\x18\x02 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\aorderID\x12\x1f\n" +
@@ -813,7 +941,9 @@ const file_api_review_v1_review_proto_rawDesc = "" +
 	"R\acontent\x12B\n" +
 	"\apicInfo\x18\a \x01(\tB(\xfaB%r#2\x1e^[a-zA-Z][a-zA-Z0-9+.-]*://.+$\xd0\x01\x01R\apicInfo\x12F\n" +
 	"\tvideoInfo\x18\b \x01(\tB(\xfaB%r#2\x1e^[a-zA-Z][a-zA-Z0-9+.-]*://.+$\xd0\x01\x01R\tvideoInfo\x12\x1c\n" +
-	"\tanonymous\x18\t \x01(\bR\tanonymous\"/\n" +
+	"\tanonymous\x18\t \x01(\bR\tanonymous\x12!\n" +
+	"\astoreID\x18\n" +
+	" \x01(\x03B\a\xfaB\x04\"\x02 \x00R\astoreID\"/\n" +
 	"\x11CreateReviewReply\x12\x1a\n" +
 	"\breviewID\x18\x01 \x01(\x03R\breviewID\"\x89\x03\n" +
 	"\x13UpdateReviewRequest\x12#\n" +
@@ -873,13 +1003,22 @@ const file_api_review_v1_review_proto_rawDesc = "" +
 	"\x16ListReviewByUidRequest\x12\x16\n" +
 	"\x06userID\x18\x01 \x01(\x03R\x06userID\"L\n" +
 	"\x14ListReviewByUidReply\x124\n" +
-	"\areviews\x18\x01 \x03(\v2\x1a.api.review.v1.ReviewReplyR\areviews2\xb7\x04\n" +
+	"\areviews\x18\x01 \x03(\v2\x1a.api.review.v1.ReviewReplyR\areviews\"\x8e\x02\n" +
+	"\x15AddReplyReviewRequest\x12#\n" +
+	"\breviewID\x18\x01 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\breviewID\x12!\n" +
+	"\aContent\x18\x02 \x01(\tB\a\xfaB\x04r\x02\x10\x05R\aContent\x12!\n" +
+	"\astoreID\x18\x03 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\astoreID\x12B\n" +
+	"\apicInfo\x18\x04 \x01(\tB(\xfaB%r#2\x1e^[a-zA-Z][a-zA-Z0-9+.-]*://.+$\xd0\x01\x01R\apicInfo\x12F\n" +
+	"\tvideoInfo\x18\x05 \x01(\tB(\xfaB%r#2\x1e^[a-zA-Z][a-zA-Z0-9+.-]*://.+$\xd0\x01\x01R\tvideoInfo\"/\n" +
+	"\x13AddReplyReviewReply\x12\x18\n" +
+	"\areplyID\x18\x01 \x01(\x03R\areplyID2\xaf\x05\n" +
 	"\x06Review\x12j\n" +
 	"\fCreateReview\x12\".api.review.v1.CreateReviewRequest\x1a .api.review.v1.CreateReviewReply\"\x14\x82\xd3\xe4\x93\x02\x0e:\x01*\"\tv1/review\x12u\n" +
 	"\fUpdateReview\x12\".api.review.v1.UpdateReviewRequest\x1a .api.review.v1.UpdateReviewReply\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*2\x14v1/review/{reviewID}\x12g\n" +
 	"\fDeleteReview\x12\".api.review.v1.DeleteReviewRequest\x1a .api.review.v1.DeleteReviewReply\"\x11\x82\xd3\xe4\x93\x02\v*\tv1/review\x12^\n" +
 	"\tGetReview\x12\x1f.api.review.v1.GetReviewRequest\x1a\x1d.api.review.v1.GetReviewReply\"\x11\x82\xd3\xe4\x93\x02\v\x12\tv1/review\x12\x80\x01\n" +
-	"\x0fListReviewByUid\x12%.api.review.v1.ListReviewByUidRequest\x1a#.api.review.v1.ListReviewByUidReply\"!\x82\xd3\xe4\x93\x02\x1b\x12\x19/v1/review/users/{userID}B2\n" +
+	"\x0fListReviewByUid\x12%.api.review.v1.ListReviewByUidRequest\x1a#.api.review.v1.ListReviewByUidReply\"!\x82\xd3\xe4\x93\x02\x1b\x12\x19/v1/review/users/{userID}\x12v\n" +
+	"\x0eAddReplyReview\x12$.api.review.v1.AddReplyReviewRequest\x1a\".api.review.v1.AddReplyReviewReply\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0fv1/review/replyB2\n" +
 	"\rapi.review.v1P\x01Z\x1freview-service/api/review/v1;v1b\x06proto3"
 
 var (
@@ -894,7 +1033,7 @@ func file_api_review_v1_review_proto_rawDescGZIP() []byte {
 	return file_api_review_v1_review_proto_rawDescData
 }
 
-var file_api_review_v1_review_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_api_review_v1_review_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_api_review_v1_review_proto_goTypes = []any{
 	(*CreateReviewRequest)(nil),    // 0: api.review.v1.CreateReviewRequest
 	(*CreateReviewReply)(nil),      // 1: api.review.v1.CreateReviewReply
@@ -907,26 +1046,30 @@ var file_api_review_v1_review_proto_goTypes = []any{
 	(*ReviewReply)(nil),            // 8: api.review.v1.ReviewReply
 	(*ListReviewByUidRequest)(nil), // 9: api.review.v1.ListReviewByUidRequest
 	(*ListReviewByUidReply)(nil),   // 10: api.review.v1.ListReviewByUidReply
-	(*timestamppb.Timestamp)(nil),  // 11: google.protobuf.Timestamp
+	(*AddReplyReviewRequest)(nil),  // 11: api.review.v1.AddReplyReviewRequest
+	(*AddReplyReviewReply)(nil),    // 12: api.review.v1.AddReplyReviewReply
+	(*timestamppb.Timestamp)(nil),  // 13: google.protobuf.Timestamp
 }
 var file_api_review_v1_review_proto_depIdxs = []int32{
-	11, // 0: api.review.v1.GetReviewReply.createTime:type_name -> google.protobuf.Timestamp
-	11, // 1: api.review.v1.GetReviewReply.updateTime:type_name -> google.protobuf.Timestamp
-	11, // 2: api.review.v1.ReviewReply.createTime:type_name -> google.protobuf.Timestamp
-	11, // 3: api.review.v1.ReviewReply.updateTime:type_name -> google.protobuf.Timestamp
+	13, // 0: api.review.v1.GetReviewReply.createTime:type_name -> google.protobuf.Timestamp
+	13, // 1: api.review.v1.GetReviewReply.updateTime:type_name -> google.protobuf.Timestamp
+	13, // 2: api.review.v1.ReviewReply.createTime:type_name -> google.protobuf.Timestamp
+	13, // 3: api.review.v1.ReviewReply.updateTime:type_name -> google.protobuf.Timestamp
 	8,  // 4: api.review.v1.ListReviewByUidReply.reviews:type_name -> api.review.v1.ReviewReply
 	0,  // 5: api.review.v1.Review.CreateReview:input_type -> api.review.v1.CreateReviewRequest
 	2,  // 6: api.review.v1.Review.UpdateReview:input_type -> api.review.v1.UpdateReviewRequest
 	4,  // 7: api.review.v1.Review.DeleteReview:input_type -> api.review.v1.DeleteReviewRequest
 	6,  // 8: api.review.v1.Review.GetReview:input_type -> api.review.v1.GetReviewRequest
 	9,  // 9: api.review.v1.Review.ListReviewByUid:input_type -> api.review.v1.ListReviewByUidRequest
-	1,  // 10: api.review.v1.Review.CreateReview:output_type -> api.review.v1.CreateReviewReply
-	3,  // 11: api.review.v1.Review.UpdateReview:output_type -> api.review.v1.UpdateReviewReply
-	5,  // 12: api.review.v1.Review.DeleteReview:output_type -> api.review.v1.DeleteReviewReply
-	7,  // 13: api.review.v1.Review.GetReview:output_type -> api.review.v1.GetReviewReply
-	10, // 14: api.review.v1.Review.ListReviewByUid:output_type -> api.review.v1.ListReviewByUidReply
-	10, // [10:15] is the sub-list for method output_type
-	5,  // [5:10] is the sub-list for method input_type
+	11, // 10: api.review.v1.Review.AddReplyReview:input_type -> api.review.v1.AddReplyReviewRequest
+	1,  // 11: api.review.v1.Review.CreateReview:output_type -> api.review.v1.CreateReviewReply
+	3,  // 12: api.review.v1.Review.UpdateReview:output_type -> api.review.v1.UpdateReviewReply
+	5,  // 13: api.review.v1.Review.DeleteReview:output_type -> api.review.v1.DeleteReviewReply
+	7,  // 14: api.review.v1.Review.GetReview:output_type -> api.review.v1.GetReviewReply
+	10, // 15: api.review.v1.Review.ListReviewByUid:output_type -> api.review.v1.ListReviewByUidReply
+	12, // 16: api.review.v1.Review.AddReplyReview:output_type -> api.review.v1.AddReplyReviewReply
+	11, // [11:17] is the sub-list for method output_type
+	5,  // [5:11] is the sub-list for method input_type
 	5,  // [5:5] is the sub-list for extension type_name
 	5,  // [5:5] is the sub-list for extension extendee
 	0,  // [0:5] is the sub-list for field type_name
@@ -943,7 +1086,7 @@ func file_api_review_v1_review_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_review_v1_review_proto_rawDesc), len(file_api_review_v1_review_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

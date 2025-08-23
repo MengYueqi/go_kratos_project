@@ -32,7 +32,9 @@ const (
 	ErrorReason_REVIEW_HAS_BEEN_DELETED ErrorReason = 2
 	ErrorReason_ID_ERR                  ErrorReason = 3
 	ErrorReason_REVIEWID_ERR            ErrorReason = 4
-	ErrorReason_ORDER_REVIEWED          ErrorReason = 100
+	// StoreID 和评论中的不一致
+	ErrorReason_STOREID_REVIEWID_MISMATCH ErrorReason = 5
+	ErrorReason_ORDER_REVIEWED            ErrorReason = 100
 )
 
 // Enum value maps for ErrorReason.
@@ -43,15 +45,17 @@ var (
 		2:   "REVIEW_HAS_BEEN_DELETED",
 		3:   "ID_ERR",
 		4:   "REVIEWID_ERR",
+		5:   "STOREID_REVIEWID_MISMATCH",
 		100: "ORDER_REVIEWED",
 	}
 	ErrorReason_value = map[string]int32{
-		"NEED_LOGIN":              0,
-		"DB_FAILED":               1,
-		"REVIEW_HAS_BEEN_DELETED": 2,
-		"ID_ERR":                  3,
-		"REVIEWID_ERR":            4,
-		"ORDER_REVIEWED":          100,
+		"NEED_LOGIN":                0,
+		"DB_FAILED":                 1,
+		"REVIEW_HAS_BEEN_DELETED":   2,
+		"ID_ERR":                    3,
+		"REVIEWID_ERR":              4,
+		"STOREID_REVIEWID_MISMATCH": 5,
+		"ORDER_REVIEWED":            100,
 	}
 )
 
@@ -86,14 +90,15 @@ var File_api_review_v1_review_error_proto protoreflect.FileDescriptor
 
 const file_api_review_v1_review_error_proto_rawDesc = "" +
 	"\n" +
-	" api/review/v1/review_error.proto\x12\rapi.review.v1\x1a\x13errors/errors.proto*\xa5\x01\n" +
+	" api/review/v1/review_error.proto\x12\rapi.review.v1\x1a\x13errors/errors.proto*\xca\x01\n" +
 	"\vErrorReason\x12\x14\n" +
 	"\n" +
 	"NEED_LOGIN\x10\x00\x1a\x04\xa8E\x91\x03\x12\x13\n" +
 	"\tDB_FAILED\x10\x01\x1a\x04\xa8E\xf4\x03\x12!\n" +
 	"\x17REVIEW_HAS_BEEN_DELETED\x10\x02\x1a\x04\xa8E\x91\x03\x12\x10\n" +
 	"\x06ID_ERR\x10\x03\x1a\x04\xa8E\x91\x03\x12\x16\n" +
-	"\fREVIEWID_ERR\x10\x04\x1a\x04\xa8E\x91\x03\x12\x18\n" +
+	"\fREVIEWID_ERR\x10\x04\x1a\x04\xa8E\x91\x03\x12#\n" +
+	"\x19STOREID_REVIEWID_MISMATCH\x10\x05\x1a\x04\xa8E\x91\x03\x12\x18\n" +
 	"\x0eORDER_REVIEWED\x10d\x1a\x04\xa8E\x90\x03\x1a\x04\xa0E\xf4\x03B2\n" +
 	"\rapi.review.v1P\x01Z\x1freview-service/api/review/v1;v1b\x06proto3"
 
