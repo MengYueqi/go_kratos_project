@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.8
 // 	protoc        v4.25.3
-// source: helloworld/v1/error_reason.proto
+// source: api/helloworld/v1/error_reason.proto
 
 package v1
 
@@ -51,11 +51,11 @@ func (x ErrorReason) String() string {
 }
 
 func (ErrorReason) Descriptor() protoreflect.EnumDescriptor {
-	return file_helloworld_v1_error_reason_proto_enumTypes[0].Descriptor()
+	return file_api_helloworld_v1_error_reason_proto_enumTypes[0].Descriptor()
 }
 
 func (ErrorReason) Type() protoreflect.EnumType {
-	return &file_helloworld_v1_error_reason_proto_enumTypes[0]
+	return &file_api_helloworld_v1_error_reason_proto_enumTypes[0]
 }
 
 func (x ErrorReason) Number() protoreflect.EnumNumber {
@@ -64,36 +64,36 @@ func (x ErrorReason) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ErrorReason.Descriptor instead.
 func (ErrorReason) EnumDescriptor() ([]byte, []int) {
-	return file_helloworld_v1_error_reason_proto_rawDescGZIP(), []int{0}
+	return file_api_helloworld_v1_error_reason_proto_rawDescGZIP(), []int{0}
 }
 
-var File_helloworld_v1_error_reason_proto protoreflect.FileDescriptor
+var File_api_helloworld_v1_error_reason_proto protoreflect.FileDescriptor
 
-const file_helloworld_v1_error_reason_proto_rawDesc = "" +
+const file_api_helloworld_v1_error_reason_proto_rawDesc = "" +
 	"\n" +
-	" helloworld/v1/error_reason.proto\x12\rhelloworld.v1*:\n" +
+	"$api/helloworld/v1/error_reason.proto\x12\rhelloworld.v1*:\n" +
 	"\vErrorReason\x12\x17\n" +
 	"\x13GREETER_UNSPECIFIED\x10\x00\x12\x12\n" +
 	"\x0eUSER_NOT_FOUND\x10\x01BH\n" +
 	"\rhelloworld.v1P\x01Z#review-service/api/helloworld/v1;v1\xa2\x02\x0fAPIHelloworldV1b\x06proto3"
 
 var (
-	file_helloworld_v1_error_reason_proto_rawDescOnce sync.Once
-	file_helloworld_v1_error_reason_proto_rawDescData []byte
+	file_api_helloworld_v1_error_reason_proto_rawDescOnce sync.Once
+	file_api_helloworld_v1_error_reason_proto_rawDescData []byte
 )
 
-func file_helloworld_v1_error_reason_proto_rawDescGZIP() []byte {
-	file_helloworld_v1_error_reason_proto_rawDescOnce.Do(func() {
-		file_helloworld_v1_error_reason_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_helloworld_v1_error_reason_proto_rawDesc), len(file_helloworld_v1_error_reason_proto_rawDesc)))
+func file_api_helloworld_v1_error_reason_proto_rawDescGZIP() []byte {
+	file_api_helloworld_v1_error_reason_proto_rawDescOnce.Do(func() {
+		file_api_helloworld_v1_error_reason_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_api_helloworld_v1_error_reason_proto_rawDesc), len(file_api_helloworld_v1_error_reason_proto_rawDesc)))
 	})
-	return file_helloworld_v1_error_reason_proto_rawDescData
+	return file_api_helloworld_v1_error_reason_proto_rawDescData
 }
 
-var file_helloworld_v1_error_reason_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_helloworld_v1_error_reason_proto_goTypes = []any{
+var file_api_helloworld_v1_error_reason_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_api_helloworld_v1_error_reason_proto_goTypes = []any{
 	(ErrorReason)(0), // 0: helloworld.v1.ErrorReason
 }
-var file_helloworld_v1_error_reason_proto_depIdxs = []int32{
+var file_api_helloworld_v1_error_reason_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -101,26 +101,26 @@ var file_helloworld_v1_error_reason_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_helloworld_v1_error_reason_proto_init() }
-func file_helloworld_v1_error_reason_proto_init() {
-	if File_helloworld_v1_error_reason_proto != nil {
+func init() { file_api_helloworld_v1_error_reason_proto_init() }
+func file_api_helloworld_v1_error_reason_proto_init() {
+	if File_api_helloworld_v1_error_reason_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_helloworld_v1_error_reason_proto_rawDesc), len(file_helloworld_v1_error_reason_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_helloworld_v1_error_reason_proto_rawDesc), len(file_api_helloworld_v1_error_reason_proto_rawDesc)),
 			NumEnums:      1,
 			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_helloworld_v1_error_reason_proto_goTypes,
-		DependencyIndexes: file_helloworld_v1_error_reason_proto_depIdxs,
-		EnumInfos:         file_helloworld_v1_error_reason_proto_enumTypes,
+		GoTypes:           file_api_helloworld_v1_error_reason_proto_goTypes,
+		DependencyIndexes: file_api_helloworld_v1_error_reason_proto_depIdxs,
+		EnumInfos:         file_api_helloworld_v1_error_reason_proto_enumTypes,
 	}.Build()
-	File_helloworld_v1_error_reason_proto = out.File
-	file_helloworld_v1_error_reason_proto_goTypes = nil
-	file_helloworld_v1_error_reason_proto_depIdxs = nil
+	File_api_helloworld_v1_error_reason_proto = out.File
+	file_api_helloworld_v1_error_reason_proto_goTypes = nil
+	file_api_helloworld_v1_error_reason_proto_depIdxs = nil
 }

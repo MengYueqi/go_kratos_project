@@ -123,26 +123,34 @@ func (m *CreateReviewRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if !_CreateReviewRequest_PicInfo_Pattern.MatchString(m.GetPicInfo()) {
-		err := CreateReviewRequestValidationError{
-			field:  "PicInfo",
-			reason: "value does not match regex pattern \"^[a-zA-Z][a-zA-Z0-9+.-]*://.+$\"",
+	if m.GetPicInfo() != "" {
+
+		if !_CreateReviewRequest_PicInfo_Pattern.MatchString(m.GetPicInfo()) {
+			err := CreateReviewRequestValidationError{
+				field:  "PicInfo",
+				reason: "value does not match regex pattern \"^[a-zA-Z][a-zA-Z0-9+.-]*://.+$\"",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
 		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
+
 	}
 
-	if !_CreateReviewRequest_VideoInfo_Pattern.MatchString(m.GetVideoInfo()) {
-		err := CreateReviewRequestValidationError{
-			field:  "VideoInfo",
-			reason: "value does not match regex pattern \"^[a-zA-Z][a-zA-Z0-9+.-]*://.+$\"",
+	if m.GetVideoInfo() != "" {
+
+		if !_CreateReviewRequest_VideoInfo_Pattern.MatchString(m.GetVideoInfo()) {
+			err := CreateReviewRequestValidationError{
+				field:  "VideoInfo",
+				reason: "value does not match regex pattern \"^[a-zA-Z][a-zA-Z0-9+.-]*://.+$\"",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
 		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
+
 	}
 
 	// no validation rules for Anonymous
@@ -357,6 +365,97 @@ func (m *UpdateReviewRequest) validate(all bool) error {
 
 	var errors []error
 
+	if m.GetReviewID() <= 0 {
+		err := UpdateReviewRequestValidationError{
+			field:  "ReviewID",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.GetContent() != "" {
+
+		if utf8.RuneCountInString(m.GetContent()) < 10 {
+			err := UpdateReviewRequestValidationError{
+				field:  "Content",
+				reason: "value length must be at least 10 runes",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+
+	}
+
+	if val := m.GetScore(); val <= 0 || val > 5 {
+		err := UpdateReviewRequestValidationError{
+			field:  "Score",
+			reason: "value must be inside range (0, 5]",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if val := m.GetServiceScore(); val <= 0 || val > 5 {
+		err := UpdateReviewRequestValidationError{
+			field:  "ServiceScore",
+			reason: "value must be inside range (0, 5]",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if val := m.GetExpressScore(); val <= 0 || val > 5 {
+		err := UpdateReviewRequestValidationError{
+			field:  "ExpressScore",
+			reason: "value must be inside range (0, 5]",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.GetPicInfo() != "" {
+
+		if !_UpdateReviewRequest_PicInfo_Pattern.MatchString(m.GetPicInfo()) {
+			err := UpdateReviewRequestValidationError{
+				field:  "PicInfo",
+				reason: "value does not match regex pattern \"^[a-zA-Z][a-zA-Z0-9+.-]*://.+$\"",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+
+	}
+
+	if m.GetVideoInfo() != "" {
+
+		if !_UpdateReviewRequest_VideoInfo_Pattern.MatchString(m.GetVideoInfo()) {
+			err := UpdateReviewRequestValidationError{
+				field:  "VideoInfo",
+				reason: "value does not match regex pattern \"^[a-zA-Z][a-zA-Z0-9+.-]*://.+$\"",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+
+	}
+
+	// no validation rules for Anonymous
+
 	if len(errors) > 0 {
 		return UpdateReviewRequestMultiError(errors)
 	}
@@ -437,6 +536,10 @@ var _ interface {
 	ErrorName() string
 } = UpdateReviewRequestValidationError{}
 
+var _UpdateReviewRequest_PicInfo_Pattern = regexp.MustCompile("^[a-zA-Z][a-zA-Z0-9+.-]*://.+$")
+
+var _UpdateReviewRequest_VideoInfo_Pattern = regexp.MustCompile("^[a-zA-Z][a-zA-Z0-9+.-]*://.+$")
+
 // Validate checks the field values on UpdateReviewReply with the rules defined
 // in the proto definition for this message. If any rules are violated, the
 // first error encountered is returned, or nil if there are no violations.
@@ -458,6 +561,17 @@ func (m *UpdateReviewReply) validate(all bool) error {
 	}
 
 	var errors []error
+
+	if m.GetReviewID() <= 0 {
+		err := UpdateReviewReplyValidationError{
+			field:  "ReviewID",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	if len(errors) > 0 {
 		return UpdateReviewReplyMultiError(errors)
@@ -561,6 +675,28 @@ func (m *DeleteReviewRequest) validate(all bool) error {
 
 	var errors []error
 
+	if m.GetID() <= 0 {
+		err := DeleteReviewRequestValidationError{
+			field:  "ID",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.GetReviewID() <= 0 {
+		err := DeleteReviewRequestValidationError{
+			field:  "ReviewID",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
 	if len(errors) > 0 {
 		return DeleteReviewRequestMultiError(errors)
 	}
@@ -662,6 +798,8 @@ func (m *DeleteReviewReply) validate(all bool) error {
 	}
 
 	var errors []error
+
+	// no validation rules for ReviewID
 
 	if len(errors) > 0 {
 		return DeleteReviewReplyMultiError(errors)
@@ -765,6 +903,17 @@ func (m *GetReviewRequest) validate(all bool) error {
 
 	var errors []error
 
+	if m.GetReviewID() <= 0 {
+		err := GetReviewRequestValidationError{
+			field:  "ReviewID",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
 	if len(errors) > 0 {
 		return GetReviewRequestMultiError(errors)
 	}
@@ -865,6 +1014,82 @@ func (m *GetReviewReply) validate(all bool) error {
 
 	var errors []error
 
+	// no validation rules for UserID
+
+	// no validation rules for OrderID
+
+	// no validation rules for Score
+
+	// no validation rules for ServiceScore
+
+	// no validation rules for ExpressScore
+
+	// no validation rules for Content
+
+	// no validation rules for PicInfo
+
+	// no validation rules for VideoInfo
+
+	// no validation rules for Anonymous
+
+	if all {
+		switch v := interface{}(m.GetCreateTime()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, GetReviewReplyValidationError{
+					field:  "CreateTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, GetReviewReplyValidationError{
+					field:  "CreateTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCreateTime()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return GetReviewReplyValidationError{
+				field:  "CreateTime",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetUpdateTime()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, GetReviewReplyValidationError{
+					field:  "UpdateTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, GetReviewReplyValidationError{
+					field:  "UpdateTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetUpdateTime()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return GetReviewReplyValidationError{
+				field:  "UpdateTime",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	if len(errors) > 0 {
 		return GetReviewReplyMultiError(errors)
 	}
@@ -943,42 +1168,117 @@ var _ interface {
 	ErrorName() string
 } = GetReviewReplyValidationError{}
 
-// Validate checks the field values on ListReviewRequest with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// first error encountered is returned, or nil if there are no violations.
-func (m *ListReviewRequest) Validate() error {
+// Validate checks the field values on ReviewReply with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *ReviewReply) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on ListReviewRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// ListReviewRequestMultiError, or nil if none found.
-func (m *ListReviewRequest) ValidateAll() error {
+// ValidateAll checks the field values on ReviewReply with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in ReviewReplyMultiError, or
+// nil if none found.
+func (m *ReviewReply) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *ListReviewRequest) validate(all bool) error {
+func (m *ReviewReply) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
+	// no validation rules for UserID
+
+	// no validation rules for OrderID
+
+	// no validation rules for Score
+
+	// no validation rules for ServiceScore
+
+	// no validation rules for ExpressScore
+
+	// no validation rules for Content
+
+	// no validation rules for PicInfo
+
+	// no validation rules for VideoInfo
+
+	// no validation rules for Anonymous
+
+	if all {
+		switch v := interface{}(m.GetCreateTime()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ReviewReplyValidationError{
+					field:  "CreateTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ReviewReplyValidationError{
+					field:  "CreateTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCreateTime()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ReviewReplyValidationError{
+				field:  "CreateTime",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetUpdateTime()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ReviewReplyValidationError{
+					field:  "UpdateTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ReviewReplyValidationError{
+					field:  "UpdateTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetUpdateTime()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ReviewReplyValidationError{
+				field:  "UpdateTime",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	if len(errors) > 0 {
-		return ListReviewRequestMultiError(errors)
+		return ReviewReplyMultiError(errors)
 	}
 
 	return nil
 }
 
-// ListReviewRequestMultiError is an error wrapping multiple validation errors
-// returned by ListReviewRequest.ValidateAll() if the designated constraints
-// aren't met.
-type ListReviewRequestMultiError []error
+// ReviewReplyMultiError is an error wrapping multiple validation errors
+// returned by ReviewReply.ValidateAll() if the designated constraints aren't met.
+type ReviewReplyMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m ListReviewRequestMultiError) Error() string {
+func (m ReviewReplyMultiError) Error() string {
 	msgs := make([]string, 0, len(m))
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -987,11 +1287,11 @@ func (m ListReviewRequestMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m ListReviewRequestMultiError) AllErrors() []error { return m }
+func (m ReviewReplyMultiError) AllErrors() []error { return m }
 
-// ListReviewRequestValidationError is the validation error returned by
-// ListReviewRequest.Validate if the designated constraints aren't met.
-type ListReviewRequestValidationError struct {
+// ReviewReplyValidationError is the validation error returned by
+// ReviewReply.Validate if the designated constraints aren't met.
+type ReviewReplyValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -999,24 +1299,22 @@ type ListReviewRequestValidationError struct {
 }
 
 // Field function returns field value.
-func (e ListReviewRequestValidationError) Field() string { return e.field }
+func (e ReviewReplyValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e ListReviewRequestValidationError) Reason() string { return e.reason }
+func (e ReviewReplyValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e ListReviewRequestValidationError) Cause() error { return e.cause }
+func (e ReviewReplyValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e ListReviewRequestValidationError) Key() bool { return e.key }
+func (e ReviewReplyValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e ListReviewRequestValidationError) ErrorName() string {
-	return "ListReviewRequestValidationError"
-}
+func (e ReviewReplyValidationError) ErrorName() string { return "ReviewReplyValidationError" }
 
 // Error satisfies the builtin error interface
-func (e ListReviewRequestValidationError) Error() string {
+func (e ReviewReplyValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -1028,14 +1326,14 @@ func (e ListReviewRequestValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sListReviewRequest.%s: %s%s",
+		"invalid %sReviewReply.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = ListReviewRequestValidationError{}
+var _ error = ReviewReplyValidationError{}
 
 var _ interface {
 	Field() string
@@ -1043,44 +1341,46 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = ListReviewRequestValidationError{}
+} = ReviewReplyValidationError{}
 
-// Validate checks the field values on ListReviewReply with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// first error encountered is returned, or nil if there are no violations.
-func (m *ListReviewReply) Validate() error {
+// Validate checks the field values on ListReviewByUidRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListReviewByUidRequest) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on ListReviewReply with the rules
+// ValidateAll checks the field values on ListReviewByUidRequest with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// ListReviewReplyMultiError, or nil if none found.
-func (m *ListReviewReply) ValidateAll() error {
+// ListReviewByUidRequestMultiError, or nil if none found.
+func (m *ListReviewByUidRequest) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *ListReviewReply) validate(all bool) error {
+func (m *ListReviewByUidRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
+	// no validation rules for UserID
+
 	if len(errors) > 0 {
-		return ListReviewReplyMultiError(errors)
+		return ListReviewByUidRequestMultiError(errors)
 	}
 
 	return nil
 }
 
-// ListReviewReplyMultiError is an error wrapping multiple validation errors
-// returned by ListReviewReply.ValidateAll() if the designated constraints
-// aren't met.
-type ListReviewReplyMultiError []error
+// ListReviewByUidRequestMultiError is an error wrapping multiple validation
+// errors returned by ListReviewByUidRequest.ValidateAll() if the designated
+// constraints aren't met.
+type ListReviewByUidRequestMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m ListReviewReplyMultiError) Error() string {
+func (m ListReviewByUidRequestMultiError) Error() string {
 	msgs := make([]string, 0, len(m))
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -1089,11 +1389,11 @@ func (m ListReviewReplyMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m ListReviewReplyMultiError) AllErrors() []error { return m }
+func (m ListReviewByUidRequestMultiError) AllErrors() []error { return m }
 
-// ListReviewReplyValidationError is the validation error returned by
-// ListReviewReply.Validate if the designated constraints aren't met.
-type ListReviewReplyValidationError struct {
+// ListReviewByUidRequestValidationError is the validation error returned by
+// ListReviewByUidRequest.Validate if the designated constraints aren't met.
+type ListReviewByUidRequestValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -1101,22 +1401,24 @@ type ListReviewReplyValidationError struct {
 }
 
 // Field function returns field value.
-func (e ListReviewReplyValidationError) Field() string { return e.field }
+func (e ListReviewByUidRequestValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e ListReviewReplyValidationError) Reason() string { return e.reason }
+func (e ListReviewByUidRequestValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e ListReviewReplyValidationError) Cause() error { return e.cause }
+func (e ListReviewByUidRequestValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e ListReviewReplyValidationError) Key() bool { return e.key }
+func (e ListReviewByUidRequestValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e ListReviewReplyValidationError) ErrorName() string { return "ListReviewReplyValidationError" }
+func (e ListReviewByUidRequestValidationError) ErrorName() string {
+	return "ListReviewByUidRequestValidationError"
+}
 
 // Error satisfies the builtin error interface
-func (e ListReviewReplyValidationError) Error() string {
+func (e ListReviewByUidRequestValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -1128,14 +1430,14 @@ func (e ListReviewReplyValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sListReviewReply.%s: %s%s",
+		"invalid %sListReviewByUidRequest.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = ListReviewReplyValidationError{}
+var _ error = ListReviewByUidRequestValidationError{}
 
 var _ interface {
 	Field() string
@@ -1143,4 +1445,140 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = ListReviewReplyValidationError{}
+} = ListReviewByUidRequestValidationError{}
+
+// Validate checks the field values on ListReviewByUidReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListReviewByUidReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListReviewByUidReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListReviewByUidReplyMultiError, or nil if none found.
+func (m *ListReviewByUidReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListReviewByUidReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetReviews() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ListReviewByUidReplyValidationError{
+						field:  fmt.Sprintf("Reviews[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ListReviewByUidReplyValidationError{
+						field:  fmt.Sprintf("Reviews[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ListReviewByUidReplyValidationError{
+					field:  fmt.Sprintf("Reviews[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return ListReviewByUidReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListReviewByUidReplyMultiError is an error wrapping multiple validation
+// errors returned by ListReviewByUidReply.ValidateAll() if the designated
+// constraints aren't met.
+type ListReviewByUidReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListReviewByUidReplyMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListReviewByUidReplyMultiError) AllErrors() []error { return m }
+
+// ListReviewByUidReplyValidationError is the validation error returned by
+// ListReviewByUidReply.Validate if the designated constraints aren't met.
+type ListReviewByUidReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListReviewByUidReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListReviewByUidReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListReviewByUidReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListReviewByUidReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListReviewByUidReplyValidationError) ErrorName() string {
+	return "ListReviewByUidReplyValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ListReviewByUidReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListReviewByUidReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListReviewByUidReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListReviewByUidReplyValidationError{}

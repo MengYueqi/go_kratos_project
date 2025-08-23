@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	pb "review-service/api/review/v1"
 	"review-service/internal/biz"
 	"review-service/internal/data/model"
@@ -40,10 +41,11 @@ func (s *ReviewService) CreateReview(ctx context.Context, req *pb.CreateReviewRe
 		PicInfo:      req.PicInfo,
 		VideoInfo:    req.VideoInfo,
 		OrderID:      req.OrderID,
+		UserID:       req.UserID,
 	})
 	// 错误处理
 	if err != nil {
-		panic(err)
+		return &pb.CreateReviewReply{}, err
 	}
 	// 返回数据
 	return &pb.CreateReviewReply{
@@ -51,14 +53,86 @@ func (s *ReviewService) CreateReview(ctx context.Context, req *pb.CreateReviewRe
 	}, nil
 }
 func (s *ReviewService) UpdateReview(ctx context.Context, req *pb.UpdateReviewRequest) (*pb.UpdateReviewReply, error) {
-	return &pb.UpdateReviewReply{}, nil
+	var anonymous int32
+	if req.Anonymous {
+		anonymous = 1
+	}
+	newRV := &model.ReviewInfo{
+		ReviewID:     req.ReviewID,
+		Content:      req.Content,
+		Score:        req.Score,
+		ServiceScore: req.ServiceScore,
+		ExpressScore: req.ExpressScore,
+		PicInfo:      req.PicInfo,
+		VideoInfo:    req.VideoInfo,
+		Anonymous:    anonymous,
+	}
+	reviewId, err := s.uc.UpdateReviewByReviewID(ctx, newRV)
+	if err != nil {
+		return &pb.UpdateReviewReply{}, err
+	}
+	return &pb.UpdateReviewReply{
+		ReviewID: reviewId,
+	}, nil
 }
 func (s *ReviewService) DeleteReview(ctx context.Context, req *pb.DeleteReviewRequest) (*pb.DeleteReviewReply, error) {
-	return &pb.DeleteReviewReply{}, nil
+	err := s.uc.DeleteReviewer(ctx, req.ID)
+	if err != nil {
+		return &pb.DeleteReviewReply{}, err
+	}
+	return &pb.DeleteReviewReply{
+		ReviewID: req.ReviewID,
+	}, nil
 }
 func (s *ReviewService) GetReview(ctx context.Context, req *pb.GetReviewRequest) (*pb.GetReviewReply, error) {
-	return &pb.GetReviewReply{}, nil
+	rv, err := s.uc.GetReviewByReviewID(ctx, req.ReviewID)
+	if err != nil {
+		return &pb.GetReviewReply{}, err
+	}
+	var anonymous bool
+	if rv.Anonymous == 1 {
+		anonymous = true
+	}
+	return &pb.GetReviewReply{
+		UserID:       rv.UserID,
+		OrderID:      rv.OrderID,
+		Score:        rv.Score,
+		ServiceScore: rv.ServiceScore,
+		ExpressScore: rv.ExpressScore,
+		Content:      rv.Content,
+		PicInfo:      rv.PicInfo,
+		VideoInfo:    rv.VideoInfo,
+		Anonymous:    anonymous,
+		CreateTime:   timestamppb.New(rv.CreateAt),
+		UpdateTime:   timestamppb.New(rv.UpdateAt),
+	}, nil
 }
-func (s *ReviewService) ListReview(ctx context.Context, req *pb.ListReviewRequest) (*pb.ListReviewReply, error) {
-	return &pb.ListReviewReply{}, nil
+func (s *ReviewService) ListReviewByUid(ctx context.Context, req *pb.ListReviewByUidRequest) (*pb.ListReviewByUidReply, error) {
+	rvList, err := s.uc.ListReviewByUid(ctx, req.UserID)
+	if err != nil {
+		return &pb.ListReviewByUidReply{}, err
+	}
+	var retReviewList []*pb.ReviewReply
+	for _, rv := range rvList {
+		var anonymous bool
+		if rv.Anonymous == 1 {
+			anonymous = true
+		}
+		retReviewList = append(retReviewList, &pb.ReviewReply{
+			UserID:       rv.UserID,
+			OrderID:      rv.OrderID,
+			Score:        rv.Score,
+			ServiceScore: rv.ServiceScore,
+			ExpressScore: rv.ExpressScore,
+			Content:      rv.Content,
+			PicInfo:      rv.PicInfo,
+			VideoInfo:    rv.VideoInfo,
+			Anonymous:    anonymous,
+			CreateTime:   timestamppb.New(rv.CreateAt),
+			UpdateTime:   timestamppb.New(rv.UpdateAt),
+		})
+	}
+	return &pb.ListReviewByUidReply{
+		Reviews: retReviewList,
+	}, nil
 }

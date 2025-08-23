@@ -33,6 +33,15 @@ config:
  	       --go_out=paths=source_relative:./internal \
 	       $(INTERNAL_PROTO_FILES)
 
+.PHONY: validate
+# generate validate proto
+validate:
+	protoc --proto_path=. \
+           --proto_path=./third_party \
+           --go_out=paths=source_relative:. \
+           --validate_out=paths=source_relative,lang=go:. \
+           $(API_PROTO_FILES)
+
 .PHONY: api
 # generate api proto
 api:
@@ -43,6 +52,15 @@ api:
  	       --go-grpc_out=paths=source_relative:./api \
 	       --openapi_out=fq_schema_naming=true,default_response=false:. \
 	       $(API_PROTO_FILES)
+
+.PHONY: errors
+# generate errors proto
+errors:
+	protoc --proto_path=. \
+         --proto_path=./third_party \
+         --go_out=paths=source_relative:. \
+         --go-errors_out=paths=source_relative:. \
+         $(API_PROTO_FILES)
 
 .PHONY: build
 # build
@@ -60,6 +78,8 @@ generate:
 all:
 	make api;
 	make config;
+	make errors;
+	make validate;
 	make generate;
 
 # show help

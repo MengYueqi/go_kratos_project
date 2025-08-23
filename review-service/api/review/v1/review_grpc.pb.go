@@ -19,11 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Review_CreateReview_FullMethodName = "/api.review.v1.Review/CreateReview"
-	Review_UpdateReview_FullMethodName = "/api.review.v1.Review/UpdateReview"
-	Review_DeleteReview_FullMethodName = "/api.review.v1.Review/DeleteReview"
-	Review_GetReview_FullMethodName    = "/api.review.v1.Review/GetReview"
-	Review_ListReview_FullMethodName   = "/api.review.v1.Review/ListReview"
+	Review_CreateReview_FullMethodName    = "/api.review.v1.Review/CreateReview"
+	Review_UpdateReview_FullMethodName    = "/api.review.v1.Review/UpdateReview"
+	Review_DeleteReview_FullMethodName    = "/api.review.v1.Review/DeleteReview"
+	Review_GetReview_FullMethodName       = "/api.review.v1.Review/GetReview"
+	Review_ListReviewByUid_FullMethodName = "/api.review.v1.Review/ListReviewByUid"
 )
 
 // ReviewClient is the client API for Review service.
@@ -35,7 +35,7 @@ type ReviewClient interface {
 	UpdateReview(ctx context.Context, in *UpdateReviewRequest, opts ...grpc.CallOption) (*UpdateReviewReply, error)
 	DeleteReview(ctx context.Context, in *DeleteReviewRequest, opts ...grpc.CallOption) (*DeleteReviewReply, error)
 	GetReview(ctx context.Context, in *GetReviewRequest, opts ...grpc.CallOption) (*GetReviewReply, error)
-	ListReview(ctx context.Context, in *ListReviewRequest, opts ...grpc.CallOption) (*ListReviewReply, error)
+	ListReviewByUid(ctx context.Context, in *ListReviewByUidRequest, opts ...grpc.CallOption) (*ListReviewByUidReply, error)
 }
 
 type reviewClient struct {
@@ -86,10 +86,10 @@ func (c *reviewClient) GetReview(ctx context.Context, in *GetReviewRequest, opts
 	return out, nil
 }
 
-func (c *reviewClient) ListReview(ctx context.Context, in *ListReviewRequest, opts ...grpc.CallOption) (*ListReviewReply, error) {
+func (c *reviewClient) ListReviewByUid(ctx context.Context, in *ListReviewByUidRequest, opts ...grpc.CallOption) (*ListReviewByUidReply, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListReviewReply)
-	err := c.cc.Invoke(ctx, Review_ListReview_FullMethodName, in, out, cOpts...)
+	out := new(ListReviewByUidReply)
+	err := c.cc.Invoke(ctx, Review_ListReviewByUid_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +105,7 @@ type ReviewServer interface {
 	UpdateReview(context.Context, *UpdateReviewRequest) (*UpdateReviewReply, error)
 	DeleteReview(context.Context, *DeleteReviewRequest) (*DeleteReviewReply, error)
 	GetReview(context.Context, *GetReviewRequest) (*GetReviewReply, error)
-	ListReview(context.Context, *ListReviewRequest) (*ListReviewReply, error)
+	ListReviewByUid(context.Context, *ListReviewByUidRequest) (*ListReviewByUidReply, error)
 	mustEmbedUnimplementedReviewServer()
 }
 
@@ -128,8 +128,8 @@ func (UnimplementedReviewServer) DeleteReview(context.Context, *DeleteReviewRequ
 func (UnimplementedReviewServer) GetReview(context.Context, *GetReviewRequest) (*GetReviewReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetReview not implemented")
 }
-func (UnimplementedReviewServer) ListReview(context.Context, *ListReviewRequest) (*ListReviewReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListReview not implemented")
+func (UnimplementedReviewServer) ListReviewByUid(context.Context, *ListReviewByUidRequest) (*ListReviewByUidReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListReviewByUid not implemented")
 }
 func (UnimplementedReviewServer) mustEmbedUnimplementedReviewServer() {}
 func (UnimplementedReviewServer) testEmbeddedByValue()                {}
@@ -224,20 +224,20 @@ func _Review_GetReview_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Review_ListReview_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListReviewRequest)
+func _Review_ListReviewByUid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListReviewByUidRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ReviewServer).ListReview(ctx, in)
+		return srv.(ReviewServer).ListReviewByUid(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Review_ListReview_FullMethodName,
+		FullMethod: Review_ListReviewByUid_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReviewServer).ListReview(ctx, req.(*ListReviewRequest))
+		return srv.(ReviewServer).ListReviewByUid(ctx, req.(*ListReviewByUidRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -266,8 +266,8 @@ var Review_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Review_GetReview_Handler,
 		},
 		{
-			MethodName: "ListReview",
-			Handler:    _Review_ListReview_Handler,
+			MethodName: "ListReviewByUid",
+			Handler:    _Review_ListReviewByUid_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

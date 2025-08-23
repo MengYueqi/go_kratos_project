@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package api.review.v1;
 import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
 
 option go_package = "review-service/api/review/v1;v1";
 option java_multiple_files = true;
@@ -15,14 +17,93 @@ service Review {
 				body: "*"
 			};
 	};
-	rpc UpdateReview (UpdateReviewRequest) returns (UpdateReviewReply);
-	rpc DeleteReview (DeleteReviewRequest) returns (DeleteReviewReply);
-	rpc GetReview (GetReviewRequest) returns (GetReviewReply);
-	rpc ListReview (ListReviewRequest) returns (ListReviewReply);
+	rpc UpdateReview (UpdateReviewRequest) returns (UpdateReviewReply){
+		option(google.api.http) = {
+			patch: "v1/review/{reviewID}",
+			body: "*"
+		};
+	};
+	rpc DeleteReview (DeleteReviewRequest) returns (DeleteReviewReply){
+		option(google.api.http) = {
+			delete: "v1/review",
+		};
+	};
+	rpc GetReview (GetReviewRequest) returns (GetReviewReply){
+		option(google.api.http) = {
+			get: "v1/review",
+		};
+	};
+	rpc ListReviewByUid (ListReviewByUidRequest) returns (ListReviewByUidReply) {
+		option (google.api.http) = {
+			get: "/v1/review/users/{userID}"
+		};
+	}
 }
 
 // 创建评价的参数
 message CreateReviewRequest {
+	int64 userID = 1 [(validate.rules).int64 = {gt: 0}];
+	int64 orderID = 2 [(validate.rules).int64 = {gt: 0}];
+	int32 score = 3 [(validate.rules).int32 = {gt: 0, lte: 5}];
+	int32 serviceScore = 4 [(validate.rules).int32 = {gt: 0, lte: 5}];
+	int32 expressScore = 5 [(validate.rules).int32 = {gt: 0, lte: 5}];
+	string content = 6 [(validate.rules).string.min_len =  10];
+	string picInfo = 7 [
+			(validate.rules).string = {
+			pattern: "^[a-zA-Z][a-zA-Z0-9+.-]*://.+$",
+			ignore_empty: true
+		}
+	];
+	string videoInfo = 8  [
+		(validate.rules).string = {
+			pattern: "^[a-zA-Z][a-zA-Z0-9+.-]*://.+$",
+			ignore_empty: true
+		}
+	];
+	bool anonymous = 9;
+}
+
+// 创建评价的回复
+message CreateReviewReply {
+	int64 reviewID = 1;
+}
+
+message UpdateReviewRequest {
+	int64 reviewID = 1 [(validate.rules).int64 = {gt: 0}];
+	string content = 2 [(validate.rules).string = {min_len: 10, ignore_empty: true}];
+	int32 score = 3 [(validate.rules).int32 = {gt: 0, lte: 5}];
+	int32 serviceScore = 4 [(validate.rules).int32 = {gt: 0, lte: 5}];
+	int32 expressScore = 5 [(validate.rules).int32 = {gt: 0, lte: 5}];
+	string picInfo = 6 [
+		(validate.rules).string = {
+			pattern: "^[a-zA-Z][a-zA-Z0-9+.-]*://.+$",
+			ignore_empty: true
+		}
+	];
+	string videoInfo = 7  [
+		(validate.rules).string = {
+			pattern: "^[a-zA-Z][a-zA-Z0-9+.-]*://.+$",
+			ignore_empty: true
+		}
+	];
+	bool anonymous = 8;
+}
+message UpdateReviewReply {
+	int64 reviewID = 1 [(validate.rules).int64 = {gt: 0}];
+}
+
+message DeleteReviewRequest {
+	int64 ID = 1 [(validate.rules).int64 = {gt: 0}];
+	int64 reviewID = 2 [(validate.rules).int64 = {gt: 0}];
+}
+message DeleteReviewReply {
+	int64 reviewID = 1;
+}
+
+message GetReviewRequest {
+	int64 reviewID = 1 [(validate.rules).int64 = {gt: 0}];
+}
+message GetReviewReply {
 	int64 userID = 1;
 	int64 orderID = 2;
 	int32 score = 3;
@@ -32,21 +113,27 @@ message CreateReviewRequest {
 	string picInfo = 7;
 	string videoInfo = 8;
 	bool anonymous = 9;
+	google.protobuf.Timestamp createTime = 10;
+	google.protobuf.Timestamp updateTime = 11;
 }
 
-// 创建评价的回复
-message CreateReviewReply {
-	int64 reviewID = 1;
+message ReviewReply {
+	int64 userID = 1;
+	int64 orderID = 2;
+	int32 score = 3;
+	int32 serviceScore = 4;
+	int32 expressScore = 5;
+	string content = 6;
+	string picInfo = 7;
+	string videoInfo = 8;
+	bool anonymous = 9;
+	google.protobuf.Timestamp createTime = 10;
+	google.protobuf.Timestamp updateTime = 11;
 }
 
-message UpdateReviewRequest {}
-message UpdateReviewReply {}
-
-message DeleteReviewRequest {}
-message DeleteReviewReply {}
-
-message GetReviewRequest {}
-message GetReviewReply {}
-
-message ListReviewRequest {}
-message ListReviewReply {}
+message ListReviewByUidRequest {
+	int64 userID = 1;
+}
+message ListReviewByUidReply {
+	repeated ReviewReply reviews = 1;
+}

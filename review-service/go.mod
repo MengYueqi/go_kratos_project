@@ -5,6 +5,7 @@ go 1.23.0
 toolchain go1.23.11
 
 require (
+	github.com/envoyproxy/protoc-gen-validate v1.0.4
 	github.com/go-kratos/kratos/v2 v2.8.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/google/wire v0.6.0
@@ -12,8 +13,11 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20240528184218-531527333157
 	google.golang.org/grpc v1.65.0
 	google.golang.org/protobuf v1.34.1
+	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/mysql v1.6.0
+	gorm.io/gen v0.3.27
 	gorm.io/gorm v1.30.1
+	gorm.io/plugin/dbresolver v1.6.2
 )
 
 require (
@@ -42,9 +46,6 @@ require (
 	golang.org/x/text v0.28.0 // indirect
 	golang.org/x/tools v0.36.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240528184218-531527333157 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/datatypes v1.2.6 // indirect
-	gorm.io/gen v0.3.27 // indirect
 	gorm.io/hints v1.1.2 // indirect
-	gorm.io/plugin/dbresolver v1.6.2 // indirect
 )

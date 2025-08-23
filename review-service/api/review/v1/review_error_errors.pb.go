@@ -63,6 +63,18 @@ func ErrorIdErr(format string, args ...interface{}) *errors.Error {
 	return errors.New(401, ErrorReason_ID_ERR.String(), fmt.Sprintf(format, args...))
 }
 
+func IsReviewidErr(err error) bool {
+	if err == nil {
+		return false
+	}
+	e := errors.FromError(err)
+	return e.Reason == ErrorReason_REVIEWID_ERR.String() && e.Code == 401
+}
+
+func ErrorReviewidErr(format string, args ...interface{}) *errors.Error {
+	return errors.New(401, ErrorReason_REVIEWID_ERR.String(), fmt.Sprintf(format, args...))
+}
+
 func IsOrderReviewed(err error) bool {
 	if err == nil {
 		return false
