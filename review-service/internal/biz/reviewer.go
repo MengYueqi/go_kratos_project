@@ -120,5 +120,16 @@ func (uc *ReviewerUsecase) AddReplyReview(ctx context.Context, reply *model.Revi
 	// 生成雪花 ID
 	reply.ReplyID = uc.sf.NextID()
 	uc.log.WithContext(ctx).Infof("[biz] CreateReviewer ID: %v", reply.ReplyID)
+	// 获取需要回复的评论
+	reviewInfo, err := uc.repo.GetReviewByReviewID(ctx, reply.ReviewID)
+	if err != nil {
+		return 0, err
+	}
+	if len(reviewInfo) == 0 {
+		return 0, v1.ErrorReviewidErr("Do not exist ReviewID: %v", reply.ReviewID)
+	}
+	if reviewInfo[0].ReviewID != reply.ReviewID {
+		return 0, v1.ErrorStoreidReviewidMismatch("StoreID and Review's StoreID mismatch: %v - %v", reply.StoreID, reply.StoreID)
+	}
 	return uc.repo.AddReviewReply(ctx, reply)
 }

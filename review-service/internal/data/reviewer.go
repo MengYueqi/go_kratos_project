@@ -133,5 +133,5 @@ func (r *ReviewerRepo) AddReviewReply(ctx context.Context, reply *model.ReviewRe
 	if err != nil {
 		return 0, v1.ErrorDbFailed("DB Save error")
 	}
-	return reply.ID, nil
+	return reply.ReplyID, nil
 }

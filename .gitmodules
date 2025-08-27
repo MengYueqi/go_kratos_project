@@ -1,0 +1,6 @@
+[submodule "review-b/api"]
+	path = review-b/api
+	url = https://github.com/MengYueqi/review_api.git
+[submodule "review-service/api"]
+	path = review-service/api
+	url = https://github.com/MengYueqi/review_api.git
