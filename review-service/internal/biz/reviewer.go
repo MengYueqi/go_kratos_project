@@ -33,7 +33,7 @@ type ReviewerRepo interface {
 	GetReviewByUID(context.Context, int64) ([]*model.ReviewInfo, error)
 	AddReviewReply(context.Context, *model.ReviewReplyInfo) (int64, error)
 	AddAppealReview(context.Context, *model.ReviewAppealInfo) (int64, error)
-	GetAppealByUID(context.Context, int64) ([]*model.ReviewAppealInfo, error)
+	GetAppealByReviewID(context.Context, int64) ([]*model.ReviewAppealInfo, error)
 }
 
 // ReviewerUsecase is a Reviewer usecase.
@@ -151,14 +151,13 @@ func (uc *ReviewerUsecase) AppealReview(ctx context.Context, appeal *model.Revie
 	if reviewInfo[0].StoreID != appeal.StoreID {
 		return 0, v1.ErrorStoreidReviewidMismatch("StoreID and Review's StoreID mismatch: %v - %v", appeal.StoreID, reviewInfo[0].StoreID)
 	}
-
 	// 4. 检查该评论是否已经被申诉过
-	existAppeal, err := uc.repo.GetAppealByUID(ctx, appeal.ReviewID)
+	existAppeal, err := uc.repo.GetAppealByReviewID(ctx, appeal.ReviewID)
 	if err != nil {
 		return 0, err
 	}
 	if len(existAppeal) > 0 {
-		return 0, v1.ErrorAppealExist("The review has been appealed: %v", appeal.ReviewID)
+		return 0, v1.ErrorErrorAppealExists("The review has been appealed: %v", appeal.ReviewID)
 	}
 
 	// 主逻辑：插入一条申诉记录

@@ -147,13 +147,13 @@ func (r *ReviewerRepo) AddAppealReview(ctx context.Context, appeal *model.Review
 	return appeal.AppealID, nil
 }
 
-func (r *ReviewerRepo) GetAppealByUID(ctx context.Context, appealID int64) ([]*model.ReviewAppealInfo, error) {
+func (r *ReviewerRepo) GetAppealByReviewID(ctx context.Context, reviewID int64) ([]*model.ReviewAppealInfo, error) {
 	data, err := r.data.query.ReviewAppealInfo.
 		WithContext(ctx).
-		Where(r.data.query.ReviewAppealInfo.AppealID.Eq(appealID)).
+		Where(r.data.query.ReviewAppealInfo.ReviewID.Eq(reviewID)).
 		Find()
 	if err != nil {
-		return nil, v1.ErrorDbFailed("DB error while finding %v", appealID)
+		return nil, v1.ErrorDbFailed("DB error while finding %v", reviewID)
 	}
 	return data, nil
 }

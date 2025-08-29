@@ -179,5 +179,4 @@ func (s *ReviewService) AppealReview(ctx context.Context, req *pb.AppealReviewRe
 	return &pb.AppealReviewReply{
 		AppealID: appealID,
 	}, nil
-
 }
