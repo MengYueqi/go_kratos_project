@@ -33,3 +33,19 @@ func (s *BusinessService) ReplyUserReview(ctx context.Context, req *pb.ReplyRevi
 		ReplyID: replyID,
 	}, nil
 }
+
+// AppealUserReview 商家对用户评论进行申诉
+func (s *BusinessService) AppealUserReview(ctx context.Context, req *pb.AppealUserReviewRequest) (*pb.AppealUserReviewReply, error) {
+	appeal, err := s.uc.AppealUserReview(ctx, &biz.AppealParam{
+		ReviewID:  req.GetReviewID(),
+		StoreID:   req.GetStoreID(),
+		Content:   req.GetContent(),
+		PicInfo:   req.GetPicInfo(),
+		VideoInfo: req.GetVideoInfo(),
+	})
+	if err != nil {
+		return &pb.AppealUserReviewReply{}, err
+	}
+	return &pb.AppealUserReviewReply{AppealID: appeal}, nil
+
+}

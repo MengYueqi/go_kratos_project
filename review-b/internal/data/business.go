@@ -38,3 +38,20 @@ func (r *businessRepo) Reply(ctx context.Context, replay *biz.ReplyParam) (int64
 	}
 	return rId.ReplyID, nil
 }
+
+// 添加申诉
+func (r *businessRepo) Appeal(ctx context.Context, appeal *biz.AppealParam) (int64, error) {
+	r.log.WithContext(ctx).Infof("[data] Appeal review Info: %+v", appeal)
+	// 调用 review 服务的 AddAppealReview 方法
+	aId, err := r.data.rc.AppealReview(ctx, &v1.AppealReviewRequest{
+		ReviewID:  appeal.ReviewID,
+		StoreID:   appeal.StoreID,
+		Content:   appeal.Content,
+		PicInfo:   appeal.PicInfo,
+		VideoInfo: appeal.VideoInfo,
+	})
+	if err != nil {
+		return -1, err
+	}
+	return aId.AppealID, nil
+}
