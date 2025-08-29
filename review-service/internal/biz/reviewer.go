@@ -32,6 +32,8 @@ type ReviewerRepo interface {
 	UpdateReviewByReviewID(context.Context, *model.ReviewInfo) (int64, error)
 	GetReviewByUID(context.Context, int64) ([]*model.ReviewInfo, error)
 	AddReviewReply(context.Context, *model.ReviewReplyInfo) (int64, error)
+	AddAppealReview(context.Context, *model.ReviewAppealInfo) (int64, error)
+	GetAppealByUID(context.Context, int64) ([]*model.ReviewAppealInfo, error)
 }
 
 // ReviewerUsecase is a Reviewer usecase.
@@ -132,4 +134,40 @@ func (uc *ReviewerUsecase) AddReplyReview(ctx context.Context, reply *model.Revi
 		return 0, v1.ErrorStoreidReviewidMismatch("StoreID and Review's StoreID mismatch: %v - %v", reply.StoreID, reply.StoreID)
 	}
 	return uc.repo.AddReviewReply(ctx, reply)
+}
+
+// 商家对用户评论进行申诉
+func (uc *ReviewerUsecase) AppealReview(ctx context.Context, appeal *model.ReviewAppealInfo) (int64, error) {
+	// 1. 检查评论是否存在
+	reviewInfo, err := uc.repo.GetReviewByReviewID(ctx, appeal.ReviewID)
+	if err != nil {
+		return 0, err
+	}
+	// 2. 检查评论是否已经被删除
+	if len(reviewInfo) == 0 {
+		return 0, v1.ErrorReviewidErr("Do not have ReviewID: %v", appeal.ReviewID)
+	}
+	// 3. 检查 StoreID 是否和评论的 StoreID 一致
+	if reviewInfo[0].StoreID != appeal.StoreID {
+		return 0, v1.ErrorStoreidReviewidMismatch("StoreID and Review's StoreID mismatch: %v - %v", appeal.StoreID, reviewInfo[0].StoreID)
+	}
+
+	// 4. 检查该评论是否已经被申诉过
+	existAppeal, err := uc.repo.GetAppealByUID(ctx, appeal.ReviewID)
+	if err != nil {
+		return 0, err
+	}
+	if len(existAppeal) > 0 {
+		return 0, v1.ErrorAppealExist("The review has been appealed: %v", appeal.ReviewID)
+	}
+
+	// 主逻辑：插入一条申诉记录
+	// 生成雪花 ID
+	appeal.AppealID = uc.sf.NextID()
+	uc.log.WithContext(ctx).Infof("[biz] CreateReviewer ID: %v", appeal.AppealID)
+	review, err := uc.repo.AddAppealReview(ctx, appeal)
+	if err != nil {
+		return 0, err
+	}
+	return review, nil
 }

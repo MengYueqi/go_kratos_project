@@ -4,3 +4,6 @@
 [submodule "review-service/api"]
 	path = review-service/api
 	url = https://github.com/MengYueqi/review_api.git
+[submodule "review-o/api"]
+	path = review-o/api
+	url = https://github.com/MengYueqi/review_api.git

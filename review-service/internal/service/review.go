@@ -159,3 +159,25 @@ func (s *ReviewService) AddReplyReview(ctx context.Context, req *pb.AddReplyRevi
 		ReplyID: replyID,
 	}, nil
 }
+
+func (s *ReviewService) AppealReview(ctx context.Context, req *pb.AppealReviewRequest) (*pb.AppealReviewReply, error) {
+	appealID, err := s.uc.AppealReview(ctx, &model.ReviewAppealInfo{
+		ReviewID:  req.ReviewID,
+		StoreID:   req.StoreID,
+		Content:   req.Content,
+		PicInfo:   req.PicInfo,
+		VideoInfo: req.VideoInfo,
+		Status:    10,
+		CreateAt:  time.Now(),
+		UpdateAt:  time.Now(),
+		CreateBy:  strconv.FormatInt(req.StoreID, 10),
+		UpdateBy:  strconv.FormatInt(req.StoreID, 10),
+	})
+	if err != nil {
+		return &pb.AppealReviewReply{}, err
+	}
+	return &pb.AppealReviewReply{
+		AppealID: appealID,
+	}, nil
+
+}

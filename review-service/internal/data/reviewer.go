@@ -135,3 +135,25 @@ func (r *ReviewerRepo) AddReviewReply(ctx context.Context, reply *model.ReviewRe
 	}
 	return reply.ReplyID, nil
 }
+
+func (r *ReviewerRepo) AddAppealReview(ctx context.Context, appeal *model.ReviewAppealInfo) (int64, error) {
+	// 插入一条申诉记录
+	err := r.data.query.ReviewAppealInfo.
+		WithContext(ctx).
+		Save(appeal)
+	if err != nil {
+		return 0, v1.ErrorDbFailed("DB Save error")
+	}
+	return appeal.AppealID, nil
+}
+
+func (r *ReviewerRepo) GetAppealByUID(ctx context.Context, appealID int64) ([]*model.ReviewAppealInfo, error) {
+	data, err := r.data.query.ReviewAppealInfo.
+		WithContext(ctx).
+		Where(r.data.query.ReviewAppealInfo.AppealID.Eq(appealID)).
+		Find()
+	if err != nil {
+		return nil, v1.ErrorDbFailed("DB error while finding %v", appealID)
+	}
+	return data, nil
+}
