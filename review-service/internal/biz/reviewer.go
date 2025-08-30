@@ -34,6 +34,8 @@ type ReviewerRepo interface {
 	AddReviewReply(context.Context, *model.ReviewReplyInfo) (int64, error)
 	AddAppealReview(context.Context, *model.ReviewAppealInfo) (int64, error)
 	GetAppealByReviewID(context.Context, int64) ([]*model.ReviewAppealInfo, error)
+	UpdateAppealByAppealID(context.Context, *model.ReviewAppealInfo) (*model.ReviewAppealInfo, error)
+	GetAppealByAppealID(context.Context, int64) ([]*model.ReviewAppealInfo, error)
 }
 
 // ReviewerUsecase is a Reviewer usecase.
@@ -169,4 +171,27 @@ func (uc *ReviewerUsecase) AppealReview(ctx context.Context, appeal *model.Revie
 		return 0, err
 	}
 	return review, nil
+}
+
+// O 端处理申诉
+func (uc *ReviewerUsecase) HandleAppeal(ctx context.Context, info *model.ReviewAppealInfo) (*model.ReviewAppealInfo, error) {
+	// 1. 检查申诉是否存在
+	existAppeal, err := uc.repo.GetAppealByAppealID(ctx, info.AppealID)
+	if err != nil {
+		return &model.ReviewAppealInfo{}, err
+	}
+	if len(existAppeal) == 0 {
+		return &model.ReviewAppealInfo{}, v1.ErrorErrorAppealExists("Do not have Appeal for AppealID: %v", info.AppealID)
+	}
+	// 对齐申诉 ID 和 ID
+	if existAppeal[0].ID != info.ID {
+		return &model.ReviewAppealInfo{}, v1.ErrorErrorAppealExists("AppealID and ID mismatch: %v - %v", info.ID, existAppeal[0].ID)
+	}
+
+	// 业务主逻辑
+	data, err := uc.repo.UpdateAppealByAppealID(ctx, info)
+	if err != nil {
+		return &model.ReviewAppealInfo{}, err
+	}
+	return data, nil
 }

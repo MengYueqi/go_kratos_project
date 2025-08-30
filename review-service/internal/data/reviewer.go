@@ -157,3 +157,26 @@ func (r *ReviewerRepo) GetAppealByReviewID(ctx context.Context, reviewID int64) 
 	}
 	return data, nil
 }
+
+func (r *ReviewerRepo) UpdateAppealByAppealID(ctx context.Context, appeal *model.ReviewAppealInfo) (*model.ReviewAppealInfo, error) {
+	_, err := r.data.query.ReviewAppealInfo.
+		WithContext(ctx).
+		Where(r.data.query.ReviewAppealInfo.AppealID.Eq(appeal.AppealID)).
+		Updates(appeal)
+	if err != nil {
+		return &model.ReviewAppealInfo{}, err
+	}
+	return appeal, nil
+}
+
+// 通过申诉 ID 获取申诉信息
+func (r *ReviewerRepo) GetAppealByAppealID(ctx context.Context, appealID int64) ([]*model.ReviewAppealInfo, error) {
+	info, err := r.data.query.ReviewAppealInfo.
+		WithContext(ctx).
+		Where(r.data.query.ReviewAppealInfo.AppealID.Eq(appealID)).
+		Find()
+	if err != nil {
+		return nil, v1.ErrorIdErr("Do not exist AppealID: %v", appealID)
+	}
+	return info, nil
+}

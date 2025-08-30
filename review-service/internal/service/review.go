@@ -180,3 +180,25 @@ func (s *ReviewService) AppealReview(ctx context.Context, req *pb.AppealReviewRe
 		AppealID: appealID,
 	}, nil
 }
+
+// O 端处理申述
+func (s *ReviewService) HandleAppeal(ctx context.Context, req *pb.AppealOperateRequest) (*pb.AppealOperateReply, error) {
+	data, err := s.uc.HandleAppeal(ctx, &model.ReviewAppealInfo{
+		AppealID: req.AppealID,
+		Status:   req.Status,
+		ID:       req.ID,
+		Reason:   req.Reason,
+		OpUser:   req.OpUser,
+		UpdateAt: time.Now(),
+	})
+	if err != nil {
+		return &pb.AppealOperateReply{}, err
+	}
+	return &pb.AppealOperateReply{
+		AppealID: data.AppealID,
+		Status:   data.Status,
+		ID:       data.ID,
+		Reason:   data.Reason,
+		OpUser:   data.OpUser,
+	}, nil
+}
