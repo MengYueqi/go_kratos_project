@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/go-redis/redis/v8"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -13,7 +14,7 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewReviewerRepo, NewDB, NewRedis)
+var ProviderSet = wire.NewSet(NewData, NewReviewerRepo, NewDB, NewRedis, NewESClient)
 
 // Data .
 type Data struct {
@@ -22,10 +23,11 @@ type Data struct {
 	query *query.Query
 	redis *redis.Client
 	log   *log.Helper
+	es    *elasticsearch.TypedClient
 }
 
 // NewData .
-func NewData(db *gorm.DB, redis *redis.Client, c *conf.Data, logger log.Logger) (*Data, func(), error) {
+func NewData(db *gorm.DB, redis *redis.Client, esClient *elasticsearch.TypedClient, c *conf.Data, logger log.Logger) (*Data, func(), error) {
 	// 为生成的代码制定对象
 	query.SetDefault(db)
 
@@ -34,6 +36,7 @@ func NewData(db *gorm.DB, redis *redis.Client, c *conf.Data, logger log.Logger) 
 		query: query.Q,
 		redis: redis,
 		log:   log.NewHelper(logger),
+		es:    esClient,
 	}
 
 	// 关闭连接
@@ -71,4 +74,15 @@ func NewRedis(c *conf.Data, logger log.Logger) (*redis.Client, error) {
 	}
 	helper.Infof("connect redis success: %s", c.Redis.Addr)
 	return rdb, nil
+}
+
+// ESClient 构造函数
+func NewESClient(c *conf.Data, logger log.Logger) (*elasticsearch.TypedClient, error) {
+	//helper := log.NewHelper(logger)
+	// ES 配置
+	cfg := elasticsearch.Config{
+		Addresses: c.Elasticsearch.Addr,
+	}
+
+	return elasticsearch.NewTypedClient(cfg)
 }

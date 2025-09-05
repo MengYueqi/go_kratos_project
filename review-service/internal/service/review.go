@@ -202,3 +202,35 @@ func (s *ReviewService) HandleAppeal(ctx context.Context, req *pb.AppealOperateR
 		OpUser:   data.OpUser,
 	}, nil
 }
+
+// 根据 StoreID 查找评论
+func (s *ReviewService) ListReviewByStoreID(ctx context.Context, req *pb.ListReviewByStoreIDRequest) (*pb.ListReviewByStoreIDReply, error) {
+	data, err := s.uc.ListReviewByStoreID(ctx, req.StoreID, req.Page, req.PageSize)
+	if err != nil {
+		return nil, err
+	}
+	// 格式化
+	list := make([]*pb.ReviewInfo, 0, len(data))
+	for _, item := range data {
+		var anonymous bool
+		if item.Anonymous == 1 {
+			anonymous = true
+		}
+		list = append(list, &pb.ReviewInfo{
+			UserID:       item.UserID,
+			OrderID:      item.OrderID,
+			Score:        item.Score,
+			ServiceScore: item.ServiceScore,
+			ExpressScore: item.ExpressScore,
+			Content:      item.Content,
+			PicInfo:      item.PicInfo,
+			VideoInfo:    item.VideoInfo,
+			Anonymous:    anonymous,
+			CreateTime:   timestamppb.New(time.Time(item.CreateAt)),
+			UpdateTime:   timestamppb.New(time.Time(item.UpdateAt)),
+		})
+	}
+	return &pb.ListReviewByStoreIDReply{
+		Reviews: list,
+	}, nil
+}

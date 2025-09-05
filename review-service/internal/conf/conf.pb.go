@@ -139,6 +139,7 @@ type Data struct {
 	Database      *Data_Database         `protobuf:"bytes,1,opt,name=database,proto3" json:"database,omitempty"`
 	Redis         *Data_Redis            `protobuf:"bytes,2,opt,name=redis,proto3" json:"redis,omitempty"`
 	Snowflake     *Data_Snowflake        `protobuf:"bytes,3,opt,name=snowflake,proto3" json:"snowflake,omitempty"`
+	Elasticsearch *Data_Elasticsearch    `protobuf:"bytes,4,opt,name=elasticsearch,proto3" json:"elasticsearch,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -190,6 +191,13 @@ func (x *Data) GetRedis() *Data_Redis {
 func (x *Data) GetSnowflake() *Data_Snowflake {
 	if x != nil {
 		return x.Snowflake
+	}
+	return nil
+}
+
+func (x *Data) GetElasticsearch() *Data_Elasticsearch {
+	if x != nil {
+		return x.Elasticsearch
 	}
 	return nil
 }
@@ -546,6 +554,58 @@ func (x *Data_Snowflake) GetDataCenterID() int64 {
 	return 0
 }
 
+type Data_Elasticsearch struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Addr          []string               `protobuf:"bytes,1,rep,name=addr,proto3" json:"addr,omitempty"`
+	Index         string                 `protobuf:"bytes,2,opt,name=index,proto3" json:"index,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Data_Elasticsearch) Reset() {
+	*x = Data_Elasticsearch{}
+	mi := &file_conf_conf_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Data_Elasticsearch) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Data_Elasticsearch) ProtoMessage() {}
+
+func (x *Data_Elasticsearch) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_conf_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Data_Elasticsearch.ProtoReflect.Descriptor instead.
+func (*Data_Elasticsearch) Descriptor() ([]byte, []int) {
+	return file_conf_conf_proto_rawDescGZIP(), []int{2, 3}
+}
+
+func (x *Data_Elasticsearch) GetAddr() []string {
+	if x != nil {
+		return x.Addr
+	}
+	return nil
+}
+
+func (x *Data_Elasticsearch) GetIndex() string {
+	if x != nil {
+		return x.Index
+	}
+	return ""
+}
+
 type Registry_Consul struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Addr          string                 `protobuf:"bytes,1,opt,name=addr,proto3" json:"addr,omitempty"`
@@ -556,7 +616,7 @@ type Registry_Consul struct {
 
 func (x *Registry_Consul) Reset() {
 	*x = Registry_Consul{}
-	mi := &file_conf_conf_proto_msgTypes[9]
+	mi := &file_conf_conf_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -568,7 +628,7 @@ func (x *Registry_Consul) String() string {
 func (*Registry_Consul) ProtoMessage() {}
 
 func (x *Registry_Consul) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[9]
+	mi := &file_conf_conf_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -618,11 +678,12 @@ const file_conf_conf_proto_rawDesc = "" +
 	"\x04GRPC\x12\x18\n" +
 	"\anetwork\x18\x01 \x01(\tR\anetwork\x12\x12\n" +
 	"\x04addr\x18\x02 \x01(\tR\x04addr\x123\n" +
-	"\atimeout\x18\x03 \x01(\v2\x19.google.protobuf.DurationR\atimeout\"\x90\x04\n" +
+	"\atimeout\x18\x03 \x01(\v2\x19.google.protobuf.DurationR\atimeout\"\x91\x05\n" +
 	"\x04Data\x125\n" +
 	"\bdatabase\x18\x01 \x01(\v2\x19.kratos.api.Data.DatabaseR\bdatabase\x12,\n" +
 	"\x05redis\x18\x02 \x01(\v2\x16.kratos.api.Data.RedisR\x05redis\x128\n" +
-	"\tsnowflake\x18\x03 \x01(\v2\x1a.kratos.api.Data.SnowflakeR\tsnowflake\x1a:\n" +
+	"\tsnowflake\x18\x03 \x01(\v2\x1a.kratos.api.Data.SnowflakeR\tsnowflake\x12D\n" +
+	"\relasticsearch\x18\x04 \x01(\v2\x1e.kratos.api.Data.ElasticsearchR\relasticsearch\x1a:\n" +
 	"\bDatabase\x12\x16\n" +
 	"\x06driver\x18\x01 \x01(\tR\x06driver\x12\x16\n" +
 	"\x06source\x18\x02 \x01(\tR\x06source\x1a\xdf\x01\n" +
@@ -635,7 +696,10 @@ const file_conf_conf_proto_rawDesc = "" +
 	"\x02db\x18\x06 \x01(\x03R\x02db\x1aK\n" +
 	"\tSnowflake\x12\x1a\n" +
 	"\bworkerID\x18\x01 \x01(\x03R\bworkerID\x12\"\n" +
-	"\fdataCenterID\x18\x02 \x01(\x03R\fdataCenterID\"u\n" +
+	"\fdataCenterID\x18\x02 \x01(\x03R\fdataCenterID\x1a9\n" +
+	"\rElasticsearch\x12\x12\n" +
+	"\x04addr\x18\x01 \x03(\tR\x04addr\x12\x14\n" +
+	"\x05index\x18\x02 \x01(\tR\x05index\"u\n" +
 	"\bRegistry\x123\n" +
 	"\x06consul\x18\x01 \x01(\v2\x1b.kratos.api.Registry.ConsulR\x06consul\x1a4\n" +
 	"\x06Consul\x12\x12\n" +
@@ -654,7 +718,7 @@ func file_conf_conf_proto_rawDescGZIP() []byte {
 	return file_conf_conf_proto_rawDescData
 }
 
-var file_conf_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_conf_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_conf_conf_proto_goTypes = []any{
 	(*Bootstrap)(nil),           // 0: kratos.api.Bootstrap
 	(*Server)(nil),              // 1: kratos.api.Server
@@ -665,8 +729,9 @@ var file_conf_conf_proto_goTypes = []any{
 	(*Data_Database)(nil),       // 6: kratos.api.Data.Database
 	(*Data_Redis)(nil),          // 7: kratos.api.Data.Redis
 	(*Data_Snowflake)(nil),      // 8: kratos.api.Data.Snowflake
-	(*Registry_Consul)(nil),     // 9: kratos.api.Registry.Consul
-	(*durationpb.Duration)(nil), // 10: google.protobuf.Duration
+	(*Data_Elasticsearch)(nil),  // 9: kratos.api.Data.Elasticsearch
+	(*Registry_Consul)(nil),     // 10: kratos.api.Registry.Consul
+	(*durationpb.Duration)(nil), // 11: google.protobuf.Duration
 }
 var file_conf_conf_proto_depIdxs = []int32{
 	1,  // 0: kratos.api.Bootstrap.server:type_name -> kratos.api.Server
@@ -677,16 +742,17 @@ var file_conf_conf_proto_depIdxs = []int32{
 	6,  // 5: kratos.api.Data.database:type_name -> kratos.api.Data.Database
 	7,  // 6: kratos.api.Data.redis:type_name -> kratos.api.Data.Redis
 	8,  // 7: kratos.api.Data.snowflake:type_name -> kratos.api.Data.Snowflake
-	9,  // 8: kratos.api.Registry.consul:type_name -> kratos.api.Registry.Consul
-	10, // 9: kratos.api.Server.HTTP.timeout:type_name -> google.protobuf.Duration
-	10, // 10: kratos.api.Server.GRPC.timeout:type_name -> google.protobuf.Duration
-	10, // 11: kratos.api.Data.Redis.read_timeout:type_name -> google.protobuf.Duration
-	10, // 12: kratos.api.Data.Redis.write_timeout:type_name -> google.protobuf.Duration
-	13, // [13:13] is the sub-list for method output_type
-	13, // [13:13] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	9,  // 8: kratos.api.Data.elasticsearch:type_name -> kratos.api.Data.Elasticsearch
+	10, // 9: kratos.api.Registry.consul:type_name -> kratos.api.Registry.Consul
+	11, // 10: kratos.api.Server.HTTP.timeout:type_name -> google.protobuf.Duration
+	11, // 11: kratos.api.Server.GRPC.timeout:type_name -> google.protobuf.Duration
+	11, // 12: kratos.api.Data.Redis.read_timeout:type_name -> google.protobuf.Duration
+	11, // 13: kratos.api.Data.Redis.write_timeout:type_name -> google.protobuf.Duration
+	14, // [14:14] is the sub-list for method output_type
+	14, // [14:14] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_conf_conf_proto_init() }
@@ -700,7 +766,7 @@ func file_conf_conf_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_conf_proto_rawDesc), len(file_conf_conf_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

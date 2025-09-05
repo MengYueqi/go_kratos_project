@@ -33,7 +33,11 @@ func wireApp(confServer *conf.Server, registry *conf.Registry, confData *conf.Da
 	if err != nil {
 		return nil, nil, err
 	}
-	dataData, cleanup, err := data.NewData(db, client, confData, logger)
+	typedClient, err := data.NewESClient(confData, logger)
+	if err != nil {
+		return nil, nil, err
+	}
+	dataData, cleanup, err := data.NewData(db, client, typedClient, confData, logger)
 	if err != nil {
 		return nil, nil, err
 	}

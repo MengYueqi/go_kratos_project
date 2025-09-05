@@ -36,6 +36,7 @@ type ReviewerRepo interface {
 	GetAppealByReviewID(context.Context, int64) ([]*model.ReviewAppealInfo, error)
 	UpdateAppealByAppealID(context.Context, *model.ReviewAppealInfo) (*model.ReviewAppealInfo, error)
 	GetAppealByAppealID(context.Context, int64) ([]*model.ReviewAppealInfo, error)
+	ListReviewByStoreID(ctx context.Context, storeID int64, offset int32, limit int32) ([]*MyReviewInfo, error)
 }
 
 // ReviewerUsecase is a Reviewer usecase.
@@ -194,4 +195,19 @@ func (uc *ReviewerUsecase) HandleAppeal(ctx context.Context, info *model.ReviewA
 		return &model.ReviewAppealInfo{}, err
 	}
 	return data, nil
+}
+
+// 根据 StoreID 获取该商户所有的评论申诉
+func (uc *ReviewerUsecase) ListReviewByStoreID(ctx context.Context, storeId int64, page int32, pageSize int32) ([]*MyReviewInfo, error) {
+	// 设置默认值
+	if page <= 0 {
+		page = 1
+	}
+	if pageSize <= 0 || pageSize > 50 {
+		pageSize = 10
+	}
+	offset := (page - 1) * pageSize
+	limit := pageSize
+	uc.log.WithContext(ctx).Debugf(" [biz] ListReviewByStoreID store:&v", storeId)
+	return uc.repo.ListReviewByStoreID(ctx, storeId, offset, limit)
 }

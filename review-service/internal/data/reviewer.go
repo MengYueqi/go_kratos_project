@@ -2,6 +2,8 @@ package data
 
 import (
 	"context"
+	"encoding/json"
+	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
 	v1 "review-service/api/review/v1"
 	"review-service/internal/data/model"
 	"time"
@@ -179,4 +181,39 @@ func (r *ReviewerRepo) GetAppealByAppealID(ctx context.Context, appealID int64) 
 		return nil, v1.ErrorIdErr("Do not exist AppealID: %v", appealID)
 	}
 	return info, nil
+}
+
+// 根据 StoreID offset 和 limit 获取评论列表
+func (r *ReviewerRepo) ListReviewByStoreID(ctx context.Context, storeID int64, offset int32, limit int32) ([]*biz.MyReviewInfo, error) {
+	// 去 ES 中查询评价
+	resp, err := r.data.es.Search().
+		Index("review").
+		From(int(offset)).
+		Size(int(limit)).Query(&types.Query{
+		Bool: &types.BoolQuery{
+			Filter: []types.Query{
+				{
+					Term: map[string]types.TermQuery{
+						"store_id": {Value: storeID},
+					},
+				},
+			},
+		},
+	}).Do(ctx)
+	if err != nil {
+		return nil, v1.ErrorDbFailed("ES search error")
+	}
+
+	rv := make([]*biz.MyReviewInfo, 0, resp.Hits.Total.Value)
+	// 反序列化数据
+	for _, hit := range resp.Hits.Hits {
+		temp := &biz.MyReviewInfo{}
+		err := json.Unmarshal(hit.Source_, temp)
+		if err != nil {
+			r.log.Errorf("json unmarshal error: %v", err)
+			continue
+		}
+		rv = append(rv, temp)
+	}
+	return rv, nil
 }

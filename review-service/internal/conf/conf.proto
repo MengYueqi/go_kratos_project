@@ -43,9 +43,14 @@ message Data {
     int64 workerID = 1;
     int64 dataCenterID = 2;
   }
+  message Elasticsearch {
+    repeated string addr = 1;
+    string index = 2;
+  }
   Database database = 1;
   Redis redis = 2;
   Snowflake snowflake = 3;
+  Elasticsearch elasticsearch = 4;
 }
 
 message Registry {
@@ -55,5 +60,7 @@ message Registry {
   }
   Consul consul = 1;
 }
+
+
 
 
