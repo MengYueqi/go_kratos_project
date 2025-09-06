@@ -3,9 +3,14 @@ package data
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
+	"github.com/go-redis/redis/v8"
+	"golang.org/x/sync/singleflight"
 	v1 "review-service/api/review/v1"
 	"review-service/internal/data/model"
+	"strconv"
+	"strings"
 	"time"
 
 	"review-service/internal/biz"
@@ -185,28 +190,57 @@ func (r *ReviewerRepo) GetAppealByAppealID(ctx context.Context, appealID int64) 
 
 // 根据 StoreID offset 和 limit 获取评论列表
 func (r *ReviewerRepo) ListReviewByStoreID(ctx context.Context, storeID int64, offset int32, limit int32) ([]*biz.MyReviewInfo, error) {
-	// 去 ES 中查询评价
-	resp, err := r.data.es.Search().
-		Index("review").
-		From(int(offset)).
-		Size(int(limit)).Query(&types.Query{
-		Bool: &types.BoolQuery{
-			Filter: []types.Query{
-				{
-					Term: map[string]types.TermQuery{
-						"store_id": {Value: storeID},
-					},
-				},
-			},
-		},
-	}).Do(ctx)
-	if err != nil {
-		return nil, v1.ErrorDbFailed("ES search error")
-	}
+	return r.getData(ctx, storeID, offset, limit)
+	//// 去 ES 中查询评价
+	//resp, err := r.data.es.Search().
+	//	Index("review").
+	//	From(int(offset)).
+	//	Size(int(limit)).Query(&types.Query{
+	//	Bool: &types.BoolQuery{
+	//		Filter: []types.Query{
+	//			{
+	//				Term: map[string]types.TermQuery{
+	//					"store_id": {Value: storeID},
+	//				},
+	//			},
+	//		},
+	//	},
+	//}).Do(ctx)
+	//if err != nil {
+	//	return nil, v1.ErrorDbFailed("ES search error")
+	//}
+	//
+	//rv := make([]*biz.MyReviewInfo, 0, resp.Hits.Total.Value)
+	//// 反序列化数据
+	//for _, hit := range resp.Hits.Hits {
+	//	temp := &biz.MyReviewInfo{}
+	//	err := json.Unmarshal(hit.Source_, temp)
+	//	if err != nil {
+	//		r.log.Errorf("json unmarshal error: %v", err)
+	//		continue
+	//	}
+	//	rv = append(rv, temp)
+	//}
+	//return rv, nil
+}
 
-	rv := make([]*biz.MyReviewInfo, 0, resp.Hits.Total.Value)
+var g singleflight.Group
+
+func (r *ReviewerRepo) getData(ctx context.Context, storeID int64, offset int32, limit int32) ([]*biz.MyReviewInfo, error) {
+	// 使用 singleflight 取数据，防止缓存击穿
+	data, err := r.getDataFromSingleFlight(ctx, "review:"+strconv.FormatInt(storeID, 10)+":"+strconv.Itoa(int(offset))+":"+strconv.Itoa(int(limit)))
+	if err != nil {
+		return nil, err
+	}
+	hm := new(types.HitsMetadata)
+	err = json.Unmarshal(data, hm)
+	if err != nil {
+		return nil, err
+	}
+	rv := make([]*biz.MyReviewInfo, 0, hm.Total.Value)
+
 	// 反序列化数据
-	for _, hit := range resp.Hits.Hits {
+	for _, hit := range hm.Hits {
 		temp := &biz.MyReviewInfo{}
 		err := json.Unmarshal(hit.Source_, temp)
 		if err != nil {
@@ -216,4 +250,78 @@ func (r *ReviewerRepo) ListReviewByStoreID(ctx context.Context, storeID int64, o
 		rv = append(rv, temp)
 	}
 	return rv, nil
+}
+
+// 使用 singleflight 防止缓存击穿
+// key: review:storeID:page:pageSize
+func (r *ReviewerRepo) getDataFromSingleFlight(ctx context.Context, key string) ([]byte, error) {
+	v, err, _ := g.Do(key, func() (interface{}, error) {
+		// 查询数据库
+		data, err := r.getDataFromCache(ctx, key)
+		if err == nil {
+			r.log.Debugf("getDataFromCache key: %s", key)
+			return data, nil
+		}
+		if errors.Is(err, redis.Nil) {
+			// 缓存中没有此数据，需要查询 ES
+			esData, err := r.getDataES(ctx, key)
+			if err != nil {
+				return nil, err
+			}
+			return esData, r.setCache(ctx, key, esData)
+		}
+		// redis 查询出错
+		return nil, err
+	})
+	r.log.Debugf("getDataFromSingleFlight key: %s, value: %v, err: %v", key, v, err)
+	if err != nil {
+		return nil, err
+	}
+	return v.([]byte), nil
+}
+
+func (r *ReviewerRepo) getDataFromCache(ctx context.Context, key string) ([]byte, error) {
+	return r.data.redis.Get(ctx, key).Bytes()
+}
+
+func (r *ReviewerRepo) setCache(ctx context.Context, key string, data []byte) error {
+	return r.data.redis.Set(ctx, key, data, time.Minute*5).Err()
+}
+
+func (r *ReviewerRepo) getDataES(ctx context.Context, key string) ([]byte, error) {
+	value := strings.Split(key, ":")
+	// 对 key 的长度进行检查
+	if len(strings.Split(key, ":")) != 4 {
+		return nil, errors.New("key format error")
+	}
+	index, storeIDStr, offsetStr, limitStr := value[0], value[1], value[2], value[3]
+	// 进行类型转换
+	offset, err := strconv.Atoi(offsetStr)
+	if err != nil {
+		return nil, errors.New("offset format error")
+	}
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		return nil, errors.New("limit format error")
+	}
+	// 去 ES 中查询评价
+	resp, err := r.data.es.Search().
+		Index(index).
+		From(int(offset)).
+		Size(int(limit)).Query(&types.Query{
+		Bool: &types.BoolQuery{
+			Filter: []types.Query{
+				{
+					Term: map[string]types.TermQuery{
+						"store_id": {Value: storeIDStr},
+					},
+				},
+			},
+		},
+	}).Do(ctx)
+	if err != nil {
+		return nil, v1.ErrorDbFailed("ES search error")
+	}
+
+	return json.Marshal(resp.Hits)
 }
