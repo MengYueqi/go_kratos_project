@@ -43,7 +43,7 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server, js *job.JobWork
 		kratos.Server(
 			gs,
 			hs,
-			js,
+			js, // 同步数据到 Elasticsearch
 		),
 	)
 }

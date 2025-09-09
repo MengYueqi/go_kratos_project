@@ -273,7 +273,7 @@ func (r *ReviewerRepo) getDataFromSingleFlight(ctx context.Context, key string) 
 		// redis 查询出错
 		return nil, err
 	})
-	r.log.Debugf("getDataFromSingleFlight key: %s, value: %v, err: %v", key, v, err)
+	r.log.Debugf("getDataFromSingleFlight key: %s, err: %v", key, err)
 	if err != nil {
 		return nil, err
 	}
